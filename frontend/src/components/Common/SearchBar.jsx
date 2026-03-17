@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 import React, { useState } from "react";
 import { FiSearch } from "react-icons/fi";
 import { IoClose } from "react-icons/io5";
@@ -20,9 +19,7 @@ const SearchBar = () => {
   return (
     <div
       className={`flex items-center justify-center w-full transition-all duration-300
-        ${
-          isOpen ? "absolute top-0 left-0 w-full bg-white h-24 z-50" : "w-auto"
-        }`}
+        ${isOpen ? "absolute top-0 left-0 w-full bg-white h-24 z-50" : "w-auto"}`}
     >
       {isOpen ? (
         <form
@@ -38,7 +35,6 @@ const SearchBar = () => {
               className="bg-neutral-100 px-4 py-2 pl-2 pr-12 rounded-sm focus:outline-none w-full placeholder:text-neutral-700"
             />
 
-            {/* Search */}
             <button
               type="submit"
               className="absolute right-2 top-1/2 transform -translate-y-1/2 text-neutral-700 hover:text-primary-500"
@@ -47,7 +43,6 @@ const SearchBar = () => {
             </button>
           </div>
 
-          {/* Close Button */}
           <button
             type="button"
             onClick={handleSearchToggle}
@@ -66,72 +61,3 @@ const SearchBar = () => {
 };
 
 export default SearchBar;
-=======
-import React, { useState } from "react";
-import { FiSearch } from "react-icons/fi";
-import { IoClose } from "react-icons/io5";
-
-const SearchBar = () => {
-  const [searchTerm, setSearchTerm] = useState("");
-  const [isOpen, setIsOpen] = useState(false);
-
-  const handleSearchToggle = () => {
-    setIsOpen(!isOpen);
-  };
-
-  const handleSearch = (e) => {
-    e.preventDefault();
-    console.log("Search Term: ", searchTerm);
-    setIsOpen(false);
-  };
-
-  return (
-    <div
-      className={`flex items-center justify-center w-full transition-all duration-300
-        ${
-          isOpen ? "absolute top-0 left-0 w-full bg-white h-24 z-50" : "w-auto"
-        }`}
-    >
-      {isOpen ? (
-        <form
-          onSubmit={handleSearch}
-          className="relative flex items-center justify-center w-full"
-        >
-          <div className="relative w-1/2">
-            <input
-              type="text"
-              placeholder="Search"
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="bg-neutral-100 px-4 py-2 pl-2 pr-12 rounded-sm focus:outline-none w-full placeholder:text-neutral-700"
-            />
-
-            {/* Search */}
-            <button
-              type="submit"
-              className="absolute right-2 top-1/2 transform -translate-y-1/2 text-neutral-700 hover:text-primary-500"
-            >
-              <FiSearch className="text-2xl cursor-pointer" />
-            </button>
-          </div>
-
-          {/* Close Button */}
-          <button
-            type="button"
-            onClick={handleSearchToggle}
-            className="absolute right-4 top-1/2 transform -translate-y-1/2 text-neutral-600 hover:text-neutral-800"
-          >
-            <IoClose className="text-2xl cursor-pointer" />
-          </button>
-        </form>
-      ) : (
-        <button onClick={handleSearchToggle}>
-          <FiSearch className="text-neutral-700 hover:text-primary-500 text-2xl cursor-pointer" />
-        </button>
-      )}
-    </div>
-  );
-};
-
-export default SearchBar;
->>>>>>> 49adca05e163e43d1355b25344acb566a70eac8b
