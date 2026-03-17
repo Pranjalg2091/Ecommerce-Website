@@ -1,0 +1,134 @@
+@import "tailwindcss";
+
+@theme {
+  /* ================= COLORS ================= */
+
+  /* Primary (Brand Green) */
+  --color-primary-50: #eaf6f0;
+  --color-primary-100: #cbe9da;
+  --color-primary-200: #a9dbc2;
+  --color-primary-300: #82cda8;
+  --color-primary-400: #5abf8f;
+  --color-primary-500: #297d53;
+  --color-primary-600: #236c48;
+  --color-primary-700: #1c593b;
+  --color-primary-800: #15462e;
+  --color-primary-900: #0e3321;
+
+  /* Secondary (Grain Yellow) */
+  --color-secondary-50: #fcf9e6;
+  --color-secondary-100: #f7f1bf;
+  --color-secondary-200: #f1e996;
+  --color-secondary-300: #ece06e;
+  --color-secondary-400: #e7d84f;
+  --color-secondary-500: #e6d54f;
+  --color-secondary-600: #cdbe45;
+  --color-secondary-700: #a69a38;
+  --color-secondary-800: #7f772b;
+  --color-secondary-900: #57531e;
+
+  /* Neutral UI Colors */
+  --color-neutral-50: #f8f9f8;
+  --color-neutral-100: #eef1ef;
+  --color-neutral-200: #d9e0dc;
+  --color-neutral-300: #b8c5be;
+  --color-neutral-400: #8c9c93;
+  --color-neutral-500: #6b7a72;
+  --color-neutral-600: #4f5c55;
+  --color-neutral-700: #3a433f;
+  --color-neutral-800: #242a27;
+  --color-neutral-900: #121514;
+
+  /* Semantic Colors */
+  --color-success: #2e9e5b;
+  --color-warning: #e6a23c;
+  --color-error: #e5484d;
+  --color-info: #3b82f6;
+
+  /* Text Colors */
+  --color-heading: #242a27;
+  --color-body: #3a433f;
+  --color-muted: #6b7a72;
+
+  /* Border */
+  --color-border: #d9e0dc;
+
+  /* ================= FONTS ================= */
+  --font-dm-serif: "DM Serif Display", serif;
+  --font-manrope: "Manrope", sans-serif;
+
+  /* ================= FONT SIZE ================= */
+  --text-xs: 12px;
+  --text-sm: 14px;
+  --text-base: 16px;
+  --text-lg: 18px;
+  --text-xl: 20px;
+  --text-2xl: 24px;
+  --text-3xl: 30px;
+  --text-4xl: 36px;
+  --text-5xl: 48px;
+
+  /* ================= FONT WEIGHT ================= */
+
+--font-weight-regular: 400;
+--font-weight-medium: 500;
+--font-weight-semibold: 600;
+--font-weight-bold: 700;
+
+
+/* ================= BUTTON TEXT ================= */
+
+--button-text-sm: 14px;
+--button-text-md: 16px;
+--button-text-lg: 18px;
+
+
+/* ================= BUTTON LETTER SPACING ================= */
+
+--button-tracking: 0.2px;
+
+
+/* ================= BUTTON PADDING ================= */
+
+--button-padding-sm: 8px 16px;
+--button-padding-md: 10px 20px;
+--button-padding-lg: 14px 28px;
+
+  /* ================= LINE HEIGHT ================= */
+  --leading-tight: 1.2;
+  --leading-normal: 1.5;
+  --leading-relaxed: 1.7;
+
+  /* ================= SPACING ================= */
+  --spacing-1: 4px;
+  --spacing-2: 8px;
+  --spacing-3: 12px;
+  --spacing-4: 16px;
+  --spacing-5: 20px;
+  --spacing-6: 24px;
+  --spacing-8: 32px;
+  --spacing-10: 40px;
+  --spacing-12: 48px;
+  --spacing-16: 64px;
+  --spacing-20: 80px;
+
+  /* ================= BORDER RADIUS ================= */
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 14px;
+  --radius-xl: 18px;
+  --radius-2xl: 24px;
+
+  /* ================= SHADOW ================= */
+  --shadow-xs: 0 1px 2px rgba(0, 0, 0, 0.05);
+  --shadow-sm: 0 2px 6px rgba(0, 0, 0, 0.06);
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.08);
+  --shadow-lg: 0 8px 20px rgba(0, 0, 0, 0.1);
+
+  /* ================= CONTAINER ================= */
+  --container-sm: 640px;
+  --container-md: 768px;
+  --container-lg: 1024px;
+  --container-xl: 1280px;
+  --container-2xl: 1440px;
+}
