@@ -36,21 +36,18 @@ const Navbar = () => {
             >
               Home
             </Link>
-
             <Link
               to="/about"
               className="text-heading font-medium hover:text-primary-500 transition-colors"
             >
               About
             </Link>
-
             <Link
               to="/products"
               className="text-heading font-medium hover:text-primary-500 transition-colors"
             >
               Products
             </Link>
-
             <Link
               to="/contact"
               className="text-heading font-medium hover:text-primary-500 transition-colors"
@@ -61,24 +58,20 @@ const Navbar = () => {
 
           {/* RIGHT → ICONS */}
           <div className="flex items-center gap-5">
-            {/* User */}
             <Link to="/profile" className="hover:text-primary-500">
               <FiUser className="text-2xl text-neutral-700 hover:text-primary-500 cursor-pointer" />
             </Link>
 
-            {/* Cart */}
             <button
               onClick={toggleCartDrawer}
               className="relative cursor-pointer hover:text-primary-500"
             >
-              <FiShoppingCart className="text-2xl text-neutral-700 " />
-
+              <FiShoppingCart className="text-2xl text-neutral-700" />
               <span className="absolute -top-2 -right-2 bg-secondary-500 text-neutral-700 text-xs w-5 h-5 flex items-center justify-center rounded-full">
                 3
               </span>
             </button>
 
-            {/* Search */}
             <div className="overflow-hidden">
               <SearchBar />
             </div>
@@ -90,7 +83,6 @@ const Navbar = () => {
         </div>
       </nav>
 
-      {/* CartDrawer Will Open from here */}
       <CartDrawer drawerOpen={drawerOpen} toggleCartDrawer={toggleCartDrawer} />
 
       {/* Mobile Navigation */}
@@ -98,38 +90,44 @@ const Navbar = () => {
         className={`fixed top-0 left-0 w-3/4 sm:w-1/2 md:w-1/3 h-full bg-white shadow-lg transform transition-transform duration-300 z-50
         ${navDrawerOpen ? "translate-x-0" : "-translate-x-full"}`}
       >
-        
         <div className="flex justify-end p-4">
           <button onClick={toggleNavDrawer}>
             <IoClose className="text-2xl cursor-pointer text-neutral-700" />
           </button>
         </div>
+
         <div className="p-4">
           <h2 className="text-2xl mb-4 font-dm-serif">Menu</h2>
+
           <nav className="space-y-4 text-heading font-medium">
             <Link
-              to="#"
+              to="/"
               onClick={toggleNavDrawer}
-              className="block hover:text-primary-500 transition-colors"
-            >Home</Link>
-
+              className="block hover:text-primary-500"
+            >
+              Home
+            </Link>
             <Link
-              to="#"
+              to="/about"
               onClick={toggleNavDrawer}
-              className="block hover:text-primary-500 transition-colors"
-            >About</Link>
-
+              className="block hover:text-primary-500"
+            >
+              About
+            </Link>
             <Link
-              to="#"
+              to="/products"
               onClick={toggleNavDrawer}
-              className="block hover:text-primary-500 transition-colors"
-            >Products</Link>
-
+              className="block hover:text-primary-500"
+            >
+              Products
+            </Link>
             <Link
-              to="#"
+              to="/contact"
               onClick={toggleNavDrawer}
-              className="block hover:text-primary-500 transition-colors"
-            >Contact</Link>
+              className="block hover:text-primary-500"
+            >
+              Contact
+            </Link>
           </nav>
         </div>
       </div>

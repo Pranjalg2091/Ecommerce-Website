@@ -15,21 +15,22 @@ const CartDrawer = ({ drawerOpen, toggleCartDrawer }) => {
         </button>
       </div>
 
-      {/* Cart content with scrollable area */}
-      <div className="grow p-4 overflow-y-auto ">
+      {/* Cart content */}
+      <div className="grow p-4 overflow-y-auto">
         <h2 className="text-xl font-dm-serif mb-4">Your Cart</h2>
-        
-        {/* Component for Cart Contents */}
+
         <CartContents />
       </div>
 
-      {/* Checkout button fixed at the bottom */}
+      {/* Checkout */}
       <div className="p-4 bg-white sticky bottom-0">
-        <button className="w-full bg-primary-500 text-white py-3 rounded-sm font-medium hover:bg-primary-700
-        transition">
+        <button className="w-full bg-primary-500 text-white py-3 rounded-sm font-medium hover:bg-primary-700 transition">
           Checkout
         </button>
-        <p className="text-xs tracking-tighter text-neutral-500 mt-2 text-center">Shipping, Taxes, and Discount codes calculated at checkout.</p>
+
+        <p className="text-xs tracking-tighter text-neutral-500 mt-2 text-center">
+          Shipping, Taxes, and Discount codes calculated at checkout.
+        </p>
       </div>
     </div>
   );

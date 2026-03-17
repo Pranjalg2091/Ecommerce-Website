@@ -6,7 +6,7 @@ const NewArrivals = () => {
   const scrollRef = useRef(null);
   const [isDragging, setIsDragging] = useState(false);
   const [startX, setStartX] = useState(0);
-  const [scrollLeft, setScrollLeft] = useState(false);
+  const [scrollLeft, setScrollLeft] = useState(0);
   const [canScrollLeft, setCanScrollLeft] = useState(false);
   const [canScrollRight, setCanScrollRight] = useState(true);
 
@@ -114,19 +114,17 @@ const NewArrivals = () => {
     scrollRef.current.scrollLeft = scrollLeft - walk;
   };
 
-  const handleMouseUpOrLeave = (e) => {
+  const handleMouseUpOrLeave = () => {
     setIsDragging(false);
   };
 
   const scroll = (direction) => {
     const scrollAmount = direction === "left" ? -300 : 300;
-    scrollRef.current.scrollBy({ left: scrollAmount, behaviour: "smooth" });
+    scrollRef.current.scrollBy({ left: scrollAmount, behavior: "smooth" });
   };
 
-  // Update Scroll buttons
   const updateScrollButtons = () => {
     const container = scrollRef.current;
-
     if (container) {
       const leftScroll = container.scrollLeft;
       const rightScrollable =
@@ -135,12 +133,6 @@ const NewArrivals = () => {
       setCanScrollLeft(leftScroll > 0);
       setCanScrollRight(rightScrollable);
     }
-    console.log({
-      scrollLeft: container.scrollLeft,
-      clientWidth: container.clientWidth,
-      containerScrollWidth: container.scrollWidth,
-      offsetLeft: scrollRef.current.offsetLeft,
-    });
   };
 
   useEffect(() => {
@@ -161,8 +153,7 @@ const NewArrivals = () => {
           and purity.
         </p>
 
-        {/* Scroll button */}
-        <div className="absolute right-0 -bottom-7.5 flex space-x-2 ">
+        <div className="absolute right-0 -bottom-7.5 flex space-x-2">
           <button
             onClick={() => scroll("left")}
             disabled={!canScrollLeft}
@@ -174,6 +165,7 @@ const NewArrivals = () => {
           >
             <FiChevronLeft className="text-2xl" />
           </button>
+
           <button
             onClick={() => scroll("right")}
             disabled={!canScrollRight}
@@ -188,11 +180,11 @@ const NewArrivals = () => {
         </div>
       </div>
 
-      {/* Scrollable Content */}
       <div
         ref={scrollRef}
-        className={`container mx-auto overflow-x-scroll flex space-x-6 relative 
-          ${isDragging ? "cursor-grabbing" : "cursor-grab"}`}
+        className={`container mx-auto overflow-x-scroll flex space-x-6 relative ${
+          isDragging ? "cursor-grabbing" : "cursor-grab"
+        }`}
         onMouseDown={handleMouseDown}
         onMouseMove={handleMouseMove}
         onMouseUp={handleMouseUpOrLeave}
@@ -209,6 +201,7 @@ const NewArrivals = () => {
               className="w-full h-[500px] object-cover rounded-lg"
               draggable="false"
             />
+
             <div className="absolute bottom-0 left-0 right-0 bg-opacity-50 backdrop-blur-md text-white p-4 rounded-b-lg">
               <Link to={`/product/${product._id}`} className="block">
                 <h4 className="font-dm-serif">{product.name}</h4>

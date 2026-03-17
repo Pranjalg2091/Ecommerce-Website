@@ -9,7 +9,11 @@ const selectedProduct = {
     "Sharbati Wheat is a premium variety of wheat known for its rich taste and excellent grain quality. It is widely used in Indian households for preparing soft and fluffy rotis. The grains are carefully selected from trusted farms in Madhya Pradesh to ensure purity, freshness, and consistent quality in every batch.",
   origin: "Sehore, Madhya Pradesh, India",
   sizes: [
-    { weight: "5kg", price: 250, originalPrice: 300 },
+    {
+      weight: "5kg",
+      price: 250,
+      originalPrice: 300,
+    },
     { weight: "10kg", price: 500, originalPrice: 600 },
     { weight: "25kg", price: 1250, originalPrice: 1500 },
   ],
@@ -57,7 +61,9 @@ const ProductDetails = () => {
   const [tab, setTab] = useState("description");
 
   const total = size.price * quantity;
-  const discount = Math.round(((size.originalPrice - size.price) / size.originalPrice) * 100);
+  const discount = Math.round(
+    ((size.originalPrice - size.price) / size.originalPrice) * 100,
+  );
 
   return (
     <div className="max-w-7xl mx-auto px-6 py-10">
@@ -126,9 +132,13 @@ const ProductDetails = () => {
               ₹{size.price}
             </span>
 
-            <span className="line-through text-neutral-500">₹{size.originalPrice}</span>
+            <span className="line-through text-neutral-500">
+              ₹{size.originalPrice}
+            </span>
 
-            <span className="text-secondary-600 font-manrope font-medium">{discount}% OFF</span>
+            <span className="text-secondary-600 font-manrope font-medium">
+              {discount}% OFF
+            </span>
           </div>
 
           {/* SIZE SELECTOR */}
@@ -164,18 +174,25 @@ const ProductDetails = () => {
                 -
               </button>
               <span className="px-6">{quantity}</span>
-              <button onClick={() => setQuantity(quantity + 1)} className="px-4 py-2">
+              <button
+                onClick={() => setQuantity(quantity + 1)}
+                className="px-4 py-2"
+              >
                 +
               </button>
             </div>
           </div>
 
           {/* TOTAL */}
-          <p className="mb-6 font-manrope font-medium text-lg">Total: ₹{total}</p>
+          <p className="mb-6 font-manrope font-medium text-lg">
+            Total: ₹{total}
+          </p>
 
           {/* GRINDING SLOT */}
           <div className="mb-6">
-            <p className="font-manrope font-medium mb-2">Select Wheat Grinding Time Slot:</p>
+            <p className="font-manrope font-medium mb-2">
+              Select Wheat Grinding Time Slot:
+            </p>
 
             <div className="flex flex-wrap gap-3 text-sm">
               {selectedProduct.grindingSlots.map((s, i) => (
@@ -183,7 +200,9 @@ const ProductDetails = () => {
                   key={i}
                   onClick={() => setTimeSlot(s)}
                   className={`px-4 py-2 font-manrope font-medium border border-neutral-300 rounded ${
-                    timeSlot === s ? "bg-secondary-600 text-white border-none" : "hover:bg-neutral-100"
+                    timeSlot === s
+                      ? "bg-secondary-600 text-white border-none"
+                      : "hover:bg-neutral-100"
                   }`}
                 >
                   {s}
@@ -259,5 +278,3 @@ const ProductDetails = () => {
     </div>
   );
 };
-
-export default ProductDetails;

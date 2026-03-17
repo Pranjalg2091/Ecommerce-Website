@@ -4,12 +4,13 @@ import { Link } from "react-router-dom";
 
 const Hero = () => {
   return (
-    <section className="relative ">
+    <section className="relative">
       <img
         src={heroImage}
         alt="GrainMart"
         className="w-full h-[70vh] md:h-[80vh] lg:h-[90vh] object-cover"
       />
+
       <div className="absolute inset-0 bg-black/0 flex items-center justify-center">
         <div className="text-center text-white p-6">
           <h1 className="text-4xl md:text-7xl font-dm-serif tracking-normal mb-4">
@@ -17,6 +18,7 @@ const Hero = () => {
             <br />
             Direct From Our Shop
           </h1>
+
           <p className="text-base font-manrope tracking-normal md:text-lg mb-6">
             Buy premium quality wheat and flour with the option to grind fresh
             at our store. Choose your grain, <br />

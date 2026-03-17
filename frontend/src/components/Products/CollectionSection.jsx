@@ -36,7 +36,6 @@ const CollectionSection = () => {
       <div className="container mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
 
         {categories.map((item, index) => (
-
           <div key={index} className="relative overflow-hidden rounded-xl group cursor-pointer">
 
             <img
@@ -48,7 +47,6 @@ const CollectionSection = () => {
             <div className="absolute inset-0 bg-linear-to-t from-black/90 via-black/30 to-transparent"></div>
 
             <div className="absolute bottom-4 left-4 text-white max-w-[80%]">
-
               <h2 className="text-xl font-dm-serif mb-2">
                 {item.title}
               </h2>
@@ -61,13 +59,11 @@ const CollectionSection = () => {
                 to="/"
                 className="flex items-center gap-2 text-sm font-medium hover:underline"
               >
-                Explore More <FiArrowRight className="text-lg"/>
+                Explore More <FiArrowRight className="text-lg" />
               </Link>
-
             </div>
 
           </div>
-
         ))}
 
       </div>
