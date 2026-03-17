@@ -1,0 +1,94 @@
+
+/* =========================
+   GrainMart Utility Classes
+   ========================= */
+
+/* ===== PRIMARY ===== */
+.bg-primary {
+  background-color: #297d53;
+}
+.bg-primary-hover {
+  background-color: #236c48;
+}
+.bg-primary-active {
+  background-color: #297d53;
+}
+
+/* ===== SECONDARY ===== */
+.bg-secondary {
+  background-color: #e6d54f;
+}
+.bg-secondary-hover {
+  background-color: #cdbe45;
+}
+
+/* ===== TEXT COLORS ===== */
+.text-primary {
+  color: #297d53;
+}
+.text-secondary {
+  color: #e6d54f;
+}
+.text-heading {
+  color: #242a27;
+}
+.text-body {
+  color: #3a433f;
+}
+
+/* ===== STATUS COLORS ===== */
+.bg-success {
+  background-color: #2e9e5b;
+}
+.bg-warning {
+  background-color: #e6a23c;
+}
+.bg-error {
+  background-color: #e5484d;
+}
+.bg-info {
+  background-color: #3b82f6;
+}
+
+/* ===== TYPOGRAPHY ===== */
+.font-heading {
+  font-family: "DM Serif Display", serif;
+}
+.font-body {
+  font-family: "Manrope", sans-serif;
+}
+
+/* ===== RADIUS ===== */
+.radius-sm {
+  border-radius: 6px;
+}
+.radius-md {
+  border-radius: 10px;
+}
+.radius-lg {
+  border-radius: 14px;
+}
+
+/* ===== SHADOWS ===== */
+.shadow-card {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+}
+.shadow-hover {
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+}
+.shadow-navbar {
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+/* ===== BORDER ===== */
+.border-light {
+  border-color: #d9e0dc;
+}
+
+/* ===== CONTAINER ===== */
+.container-width {
+  max-width: 1280px;
+  margin: auto;
+  padding-left: 16px;
+  padding-right: 16px;
+}
