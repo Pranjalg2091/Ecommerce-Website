@@ -3,7 +3,7 @@
 @theme {
   /* ================= COLORS ================= */
 
-  /* Primary (Brand Green) */
+  /* ================= Primary (Brand Green) ================= */
   --color-primary-50: #eaf6f0;
   --color-primary-100: #cbe9da;
   --color-primary-200: #a9dbc2;
@@ -15,7 +15,7 @@
   --color-primary-800: #15462e;
   --color-primary-900: #0e3321;
 
-  /* Secondary (Grain Yellow) */
+  /* ================= Secondary (Grain Yellow) ================= */
   --color-secondary-50: #fcf9e6;
   --color-secondary-100: #f7f1bf;
   --color-secondary-200: #f1e996;
@@ -27,7 +27,7 @@
   --color-secondary-800: #7f772b;
   --color-secondary-900: #57531e;
 
-  /* Neutral UI Colors */
+  /* ================= Neutral UI Colors ================= */
   --color-neutral-50: #f8f9f8;
   --color-neutral-100: #eef1ef;
   --color-neutral-200: #d9e0dc;
@@ -39,18 +39,26 @@
   --color-neutral-800: #242a27;
   --color-neutral-900: #121514;
 
-  /* Semantic Colors */
+  /* ================= Semantic Colors =================  */
   --color-success: #2e9e5b;
-  --color-warning: #e6a23c;
-  --color-error: #e5484d;
-  --color-info: #3b82f6;
+  --color-success-hover: #257f49;
 
-  /* Text Colors */
+  --color-warning: #e6a23c;
+  --color-warning-hover: #c8832f;
+
+  --color-error: #e5484d;
+  --color-error-hover: #c93b40;
+
+  --color-info: #3b82f6;
+  --color-info-hover: #2f6fe0;
+
+
+  /* ================= Text Colors ================= */
   --color-heading: #242a27;
   --color-body: #3a433f;
   --color-muted: #6b7a72;
 
-  /* Border */
+  /* ================= Border ================= */
   --color-border: #d9e0dc;
 
   /* ================= FONTS ================= */
@@ -70,29 +78,20 @@
 
   /* ================= FONT WEIGHT ================= */
 
---font-weight-regular: 400;
---font-weight-medium: 500;
---font-weight-semibold: 600;
---font-weight-bold: 700;
+  --font-weight-regular: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
 
+  /* ================= BUTTON TEXT ================= */
 
-/* ================= BUTTON TEXT ================= */
+  --button-text-sm: 14px;
+  --button-text-md: 16px;
+  --button-text-lg: 18px;
 
---button-text-sm: 14px;
---button-text-md: 16px;
---button-text-lg: 18px;
+  /* ================= BUTTON LETTER SPACING ================= */
 
-
-/* ================= BUTTON LETTER SPACING ================= */
-
---button-tracking: 0.2px;
-
-
-/* ================= BUTTON PADDING ================= */
-
---button-padding-sm: 8px 16px;
---button-padding-md: 10px 20px;
---button-padding-lg: 14px 28px;
+  --button-tracking: 0.2px;
 
   /* ================= LINE HEIGHT ================= */
   --leading-tight: 1.2;

@@ -9,7 +9,7 @@ const Footer = () => {
       <div className="container mx-auto grid grid-cols-1 md:grid-cols-4 gap-8 px-4 lg:px-0">
         <div>
           <h3 className="font-dm-serif text-heading text-lg mb-4">
-            Newsletter
+            Get Updates & Offers
           </h3>
           <p className="font-manrope text-body text-sm mb-4">
             Be the first to hear about new products, exclusive events, and
@@ -37,7 +37,7 @@ const Footer = () => {
 
         <div>
           <h3 className="font-dm-serif text-heading text-lg mb-4">
-            Our Popular Products
+            Shop Categories
           </h3>
           <ul className="space-y-2 text-body text-sm">
             <li>
@@ -70,7 +70,7 @@ const Footer = () => {
 
         <div>
           <h3 className="font-dm-serif text-heading text-lg mb-4">
-            Support Links
+            Help & Support
           </h3>
           <ul className="space-y-2 text-body text-sm">
             <li>

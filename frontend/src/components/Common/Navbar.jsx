@@ -2,9 +2,9 @@ import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import logo from "../../assets/Grainmart-logo.svg";
 import { FiUser, FiShoppingCart } from "react-icons/fi";
-import SearchBar from "./SearchBar";
+import SearchBar from "./SearchBar.jsx";
 import { HiBars3BottomRight } from "react-icons/hi2";
-import CartDrawer from "../Layout/CartDrawer";
+import CartDrawer from "../Layout/CartDrawer.jsx";
 import { IoClose } from "react-icons/io5";
 
 const Navbar = () => {
@@ -43,7 +43,7 @@ const Navbar = () => {
               About
             </Link>
             <Link
-              to="/products"
+              to="/collections/all"
               className="text-heading font-medium hover:text-primary-500 transition-colors"
             >
               Products

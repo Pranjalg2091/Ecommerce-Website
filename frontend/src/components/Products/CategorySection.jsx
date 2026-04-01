@@ -6,7 +6,7 @@ import CategoryImage4 from "../../assets/CategoryImage4.png";
 import { Link } from "react-router-dom";
 import { FiArrowRight } from "react-icons/fi";
 
-const CollectionSection = () => {
+const CategorySection = () => {
 
   const categories = [
     {
@@ -33,14 +33,27 @@ const CollectionSection = () => {
 
   return (
     <section className="py-16 px-4 lg:px-8">
+
+      {/* 🔥 Heading + Description */}
+      <div className="text-center max-w-2xl mx-auto mb-12">
+        <h2 className="text-3xl font-dm-serif mb-4">
+          Shop By Category
+        </h2>
+
+        <p className="font-manrope text-lg text-body mb-8">
+          Discover a wide range of high-quality grains and freshly ground flour, 
+          carefully selected to bring <br />freshness, taste, and nutrition to your home.
+        </p>
+      </div>
+
       <div className="container mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
 
-        {categories.map((item, index) => (
+        {categories.map((category, index) => (
           <div key={index} className="relative overflow-hidden rounded-xl group cursor-pointer">
 
             <img
-              src={item.image}
-              alt={item.title}
+              src={category.image}
+              alt={category.title}
               className="w-full h-80 object-cover transition-transform duration-500 group-hover:scale-110"
             />
 
@@ -48,11 +61,11 @@ const CollectionSection = () => {
 
             <div className="absolute bottom-4 left-4 text-white max-w-[80%]">
               <h2 className="text-xl font-dm-serif mb-2">
-                {item.title}
+                {category.title}
               </h2>
 
               <p className="font-manrope text-sm mb-3">
-                {item.desc}
+                {category.desc}
               </p>
 
               <Link
@@ -71,4 +84,4 @@ const CollectionSection = () => {
   );
 };
 
-export default CollectionSection;
+export default CategorySection;

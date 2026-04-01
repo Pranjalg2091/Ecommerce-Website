@@ -147,7 +147,7 @@ const NewArrivals = () => {
   return (
     <section className="py-16 px-4 lg:px-0">
       <div className="container mx-auto text-center mb-10 relative">
-        <h2 className="text-3xl font-dm-serif mb-4">Our Popular Products</h2>
+        <h2 className="text-3xl font-dm-serif mb-4">Customer Favorites</h2>
         <p className="font-manrope text-lg text-body mb-8">
           Fresh wheat and flour loved by our customers for their quality, taste,
           and purity.

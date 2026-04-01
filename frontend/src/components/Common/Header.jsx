@@ -1,6 +1,6 @@
 import React from 'react'
-import Topbar from '../Layout/Topbar'
-import Navbar from './Navbar'
+import Topbar from '../Layout/Topbar.jsx'
+import Navbar from './Navbar.jsx'
 
 const Header = () => {
   return (
