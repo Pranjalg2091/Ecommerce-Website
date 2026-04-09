@@ -3,7 +3,6 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 import UserLayout from "./components/Layout/UserLayout.jsx";
 import Home from "./pages/Home.jsx";
 import { Toaster } from "sonner";
-// import ShopListPage from "./pages/ShopListPage.jsx";
 import Login from "./pages/Login.jsx";
 import Registration from "./pages/Registration.jsx";
 import Profile from "./pages/Profile.jsx";
@@ -19,6 +18,8 @@ import UserManagement from "./components/Admin/UserManagement.jsx";
 import ProductManagement from "./components/Admin/ProductManagement.jsx";
 import ProductFormPage from "./components/Admin/ProductFormPage.jsx";
 import OrderManagement from "./components/Admin/OrderManagement.jsx";
+import AboutUsPage from "./pages/AboutUsPage.jsx";
+import ContactUsPage from "./pages/ContactUsPage.jsx";
 
 const App = () => {
   return (
@@ -29,13 +30,18 @@ const App = () => {
           {/* User Layout Starts Here */}
 
           <Route index element={<Home />} />
-          {/* <Route path="products" element={<ShopListPage />} /> */}
-          <Route path="products/:id" element={<ProductDetails />} />
+         
+          <Route path="products/:id" element={<ProductDetails showSimilar={true} />} />
+
+          <Route path="about" element={<AboutUsPage />} />
+          <Route path="contact" element={<ContactUsPage />} />
 
           <Route path="login" element={<Login />} />
           <Route path="registration" element={<Registration />} />
           <Route path="profile" element={<Profile />} />
+
           <Route path="collections/:collection" element={<CollectionPage />} />
+          
           <Route path="checkout" element={<Checkout />} />
           <Route
             path="order-confirmation"

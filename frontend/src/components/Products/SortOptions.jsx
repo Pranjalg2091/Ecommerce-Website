@@ -25,4 +25,4 @@ const SortOptions = () => {
   )
 }
 
-export default SortOptions
+export default SortOptions;

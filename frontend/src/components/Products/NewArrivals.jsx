@@ -182,7 +182,7 @@ const NewArrivals = () => {
 
       <div
         ref={scrollRef}
-        className={`container mx-auto overflow-x-scroll flex space-x-6 relative ${
+        className={`container mx-auto overflow-x-scroll flex space-x-6 relative scrollbar-hide ${
           isDragging ? "cursor-grabbing" : "cursor-grab"
         }`}
         onMouseDown={handleMouseDown}

@@ -32,7 +32,7 @@ const CategorySection = () => {
   ];
 
   return (
-    <section className="py-16 px-4 lg:px-8">
+    <section className="py-16 px-4 lg:px-0 bg-white font-manrope">
 
       {/* 🔥 Heading + Description */}
       <div className="text-center max-w-2xl mx-auto mb-12">

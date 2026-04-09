@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { toast } from "sonner";
+import ProductGrid from "./ProductGrid.jsx";
 
 const selectedProduct = {
   name: "Sharbati Wheat",
@@ -68,9 +69,10 @@ const selectedProduct = {
   ],
 };
 
-
-const ProductDetails = () => {
-  const [mainImage, setMainImage] = useState("");
+const ProductDetails = ({ showSimilar = false }) => {
+  const [mainImage, setMainImage] = useState(
+    selectedProduct.images?.[0]?.url || null,
+  );
   const [size, setSize] = useState(selectedProduct.sizes[0]);
   const [quantity, setQuantity] = useState(1);
   const [timeSlot, setTimeSlot] = useState("");
@@ -115,18 +117,18 @@ const ProductDetails = () => {
 
   return (
     <div className="max-w-6xl mx-auto px-6 py-10">
-      
       <div className="grid md:grid-cols-2 gap-12">
-        
         {/* IMAGE SECTION */}
         <div>
           {/* MAIN IMAGE */}
           <div className="border rounded-xl overflow-hidden group">
-            <img
-              src={mainImage}
-              alt="Main Image"
-              className="w-full h-auto transition duration-500 group-hover:scale-110"
-            />
+            {mainImage && (
+              <img
+                src={mainImage}
+                alt="Main Image"
+                className="w-full h-auto transition duration-500 group-hover:scale-110"
+              />
+            )}
           </div>
 
           {/* DESKTOP THUMBNAILS */}
@@ -287,7 +289,12 @@ const ProductDetails = () => {
         {/* TAB HEADERS */}
         <div className="overflow-x-auto">
           <div className="flex gap-6 border-b border-border pb-0 font-manrope whitespace-nowrap min-w-max">
-            {["overview", "key-benefits", "nutrition-info", "storage-guide"].map((item) => (
+            {[
+              "overview",
+              "key-benefits",
+              "nutrition-info",
+              "storage-guide",
+            ].map((item) => (
               <button
                 key={item}
                 onClick={() => setTab(item)}
@@ -329,12 +336,14 @@ const ProductDetails = () => {
           {tab === "storage-guide" && <p>{selectedProduct.storage}</p>}
         </div>
       </div>
-      
-      
 
+      {showSimilar && (
+        <div className="mt-20 text-center">
+          <h2 className="text-3xl font-dm-serif mb-6">You May Also Like</h2>
+          <ProductGrid />
+        </div>
+      )}
     </div>
-
-
   );
 };
 
