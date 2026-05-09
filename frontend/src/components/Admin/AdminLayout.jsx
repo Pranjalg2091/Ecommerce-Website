@@ -39,17 +39,19 @@ const AdminLayout = () => {
       {/* Main Section */}
       <div className="flex-1 flex flex-col md:ml-64">
         {/* Topbar */}
-        <div className="fixed top-0 left-0 md:left-64 right-0 h-16 bg-white shadow-xs flex items-center justify-between px-6 z-20">
+        <div className="fixed top-0 left-0 md:left-64 right-0 h-16 bg-white shadow-xs flex items-center justify-between px-4 md:px-6 z-20">
           {/* Left */}
           <div className="flex items-center space-x-4">
             <button onClick={toggleSidebar} className="md:hidden">
               <HiBars3BottomRight className="text-2xl" />
             </button>
-            <h1 className="text-lg text-whitefont-semibold">Admin Dashboard</h1>
+            <h1 className="text-sm md:text-lg font-semibold truncate max-w-[140px] md:max-w-none">
+              Admin Dashboard
+            </h1>
           </div>
 
           {/* Right */}
-          <div className="flex items-center space-x-6">
+          <div className="flex items-center space-x-3 md:space-x-6">
             {/* Notification */}
             <span className="text-xl cursor-pointer">
               <IoNotificationsOutline />
@@ -58,7 +60,7 @@ const AdminLayout = () => {
             {/* Admin */}
             <div className="flex items-center space-x-2 cursor-pointer">
               <div className="w-9 h-9 rounded-full bg-gray-100 flex items-center justify-center">
-                <FiUser className="text-xl"/>
+                <FiUser className="text-xl" />
               </div>
               <span className="text-sm font-medium">Admin</span>
             </div>
@@ -66,7 +68,7 @@ const AdminLayout = () => {
         </div>
 
         {/* Content */}
-        <div className="mt-16 p-6 overflow-y-auto">
+        <div className="mt-16 px-3 py-3 md:px-6 md:py-6 overflow-y-auto">
           <Outlet />
         </div>
       </div>

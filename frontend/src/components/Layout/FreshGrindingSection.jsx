@@ -72,12 +72,12 @@ const FreshGrindingSection = () => {
           </div>
 
           {/* CTA */}
-          <Link
-            to="/grinding-slots"
+          {/* <Link
+            to="/collections/all"
             className="inline-block bg-primary-500 text-white px-7 py-3 rounded-sm font-medium hover:bg-primary-600 transition-all"
           >
             Book Grinding Slot
-          </Link>
+          </Link> */}
         </div>
 
         {/* RIGHT IMAGE */}

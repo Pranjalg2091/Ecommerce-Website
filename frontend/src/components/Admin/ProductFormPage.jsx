@@ -2,11 +2,24 @@ import React, { useEffect, useState } from "react";
 import { LuPlus } from "react-icons/lu";
 import { IoClose } from "react-icons/io5";
 import { useNavigate, useParams } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchProductDetails } from "../../redux/slices/productSlice";
+import axios from "axios";
+import { toast } from "sonner";
+import {
+  createProduct,
+  updateProduct,
+} from "../../redux/slices/adminProductSlice";
+import { IoArrowBack } from "react-icons/io5";
 
 const ProductFormPage = () => {
+  const dispatch = useDispatch();
   const { id } = useParams();
-
   const navigate = useNavigate();
+
+  const { selectedProduct, loading, error } = useSelector(
+    (state) => state.products,
+  );
 
   const isEdit = Boolean(id);
 
@@ -35,25 +48,23 @@ const ProductFormPage = () => {
     storage: "",
   };
 
-  const [productData, setProductData] = useState(defaultData);
+  const [uploading, setUploading] = useState(false);
 
   useEffect(() => {
-    if (isEdit) {
-      setProductData({
-        ...defaultData,
-        name: "Wheat Flour",
-        sku: "123456",
-        countInStock: 20,
-        sizes: [{ weight: "5kg", price: 250, originalPrice: 300 }],
-        images: [
-          { url: "https://picsum.photos/600/600?random=1" },
-          { url: "https://picsum.photos/600/600?random=2" },
-        ],
-      });
-    } else {
-      setProductData(defaultData); // ✅ ensure fresh form
+    if (id) {
+      dispatch(fetchProductDetails(id));
     }
-  }, [id]);
+  }, [dispatch, id]);
+
+  useEffect(() => {
+    if (selectedProduct) {
+      setProductData(selectedProduct);
+    } else {
+      setProductData(defaultData);
+    }
+  }, [selectedProduct]);
+
+  const [productData, setProductData] = useState(defaultData);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -67,15 +78,13 @@ const ProductFormPage = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    const newProduct = {
-      ...productData,
-      _id: Date.now().toString(),
-      createdAt: new Date(),
-    };
+    if (isEdit) {
+      dispatch(updateProduct({ id, productData }));
+    } else {
+      dispatch(createProduct(productData)); // 👈 ADD THIS
+    }
 
-    navigate("/admin/products", {
-      state: { newProduct },
-    });
+    navigate("/admin/products");
   };
 
   // ✅ Sizes handler
@@ -143,17 +152,37 @@ const ProductFormPage = () => {
   };
 
   // ✅ Image handlers
-  const handleImageUpload = (e) => {
+  const handleImageUpload = async (e) => {
     const files = Array.from(e.target.files);
 
-    const newImages = files.map((file) => ({
-      url: URL.createObjectURL(file),
-    }));
+    try {
+      setUploading(true);
 
-    setProductData((prev) => ({
-      ...prev,
-      images: [...prev.images, ...newImages],
-    }));
+      for (let file of files) {
+        const formData = new FormData();
+        formData.append("image", file);
+
+        const { data } = await axios.post(
+          `${import.meta.env.VITE_BACKEND_URL}/api/upload`,
+          formData,
+          {
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
+          },
+        );
+
+        setProductData((prev) => ({
+          ...prev,
+          images: [...prev.images, { url: data.imageUrl, altText: "" }],
+        }));
+      }
+
+      setUploading(false);
+    } catch (error) {
+      console.error(error);
+      setUploading(false);
+    }
   };
 
   // Remove image handlers
@@ -175,11 +204,30 @@ const ProductFormPage = () => {
     }));
   };
 
+  if (loading) {
+    return <p>Loading...</p>;
+  }
+
+  if (error) {
+    return <p>Error: {error}</p>;
+  }
+
   return (
     <div className="max-w-5xl mx-auto p-6 shadow-sm rounded-md font-manrope bg-white">
-      <h2 className="text-2xl font-dm-serif mb-6">
-        {isEdit ? "Edit Product" : "Add Product"}
-      </h2>
+      <div className="flex items-center gap-3 mb-6">
+        <button
+          type="button"
+          onClick={() => window.history.back()}
+          className="p-2 rounded-md hover:bg-gray-100 transition"
+        >
+          <IoArrowBack className="text-lg" />
+        </button>
+
+        <h2 className="text-xl md:text-2xl font-dm-serif text-heading">
+          {isEdit ? "Edit Product" : "Add Product"}
+        </h2>
+      </div>
+
       <form action="" onSubmit={handleSubmit}>
         {/* Name */}
         <div className="mb-6">
@@ -229,7 +277,12 @@ const ProductFormPage = () => {
             type="number"
             name="countInStock"
             value={productData.countInStock}
-            onChange={handleChange}
+            onChange={(e) =>
+              setProductData((prev) => ({
+                ...prev,
+                countInStock: Number(e.target.value),
+              }))
+            }
             className="w-full border border-border rounded-sm p-2"
             required
           />
@@ -292,7 +345,7 @@ const ProductFormPage = () => {
                       placeholder="₹"
                       value={size.price}
                       onChange={(e) =>
-                        handleSizeChange(index, "price", e.target.value)
+                        handleSizeChange(index, "price", Number(e.target.value))
                       }
                       className="w-full border border-border rounded p-2 mt-1"
                     />
@@ -308,7 +361,11 @@ const ProductFormPage = () => {
                       placeholder="₹"
                       value={size.originalPrice}
                       onChange={(e) =>
-                        handleSizeChange(index, "originalPrice", e.target.value)
+                        handleSizeChange(
+                          index,
+                          "originalPrice",
+                          Number(e.target.value),
+                        )
                       }
                       className="w-full border border-border rounded p-2 mt-1"
                     />
@@ -350,7 +407,7 @@ const ProductFormPage = () => {
 
         {/* Images Upload*/}
         <div className="mb-6">
-          <label className="block font-semibold mb-2">Images</label>
+          <label className="block font-semibold mb-2">Upload Images</label>
 
           {/* Upload Box */}
           <label className="w-full border-2 border-dashed border-border rounded-xl flex flex-col items-center justify-center py-10 cursor-pointer hover:bg-neutral-50 transition">
@@ -471,9 +528,8 @@ const ProductFormPage = () => {
         </div>
 
         {/* Grinding Slots */}
-        {(productData.name?.toLowerCase().includes("wheat") 
-        || productData.category?.toLowerCase().includes("wheat")) 
-        && (
+        {(productData.name?.toLowerCase().includes("wheat") ||
+          productData.category?.toLowerCase().includes("wheat")) && (
           <div className="mb-6">
             <label className="block font-semibold mb-2">Grinding Slots</label>
 

@@ -69,6 +69,12 @@ productRouter.post("/", protect, admin, async (request, response) => {
     response.status(201).json({ createdProduct });
   } catch (error) {
     console.error(error);
+
+    // ✅ Better error handling
+    if (error.name === "ValidationError") {
+      return res.status(400).json({ message: error.message });
+    }
+
     response.status(500).json({ message: "Server Error" });
   }
 });
@@ -142,6 +148,7 @@ productRouter.delete("/:id", protect, admin, async (request, response) => {
 // Get Api
 productRouter.get("/", async (request, response) => {
   try {
+    
     const { category, size, grindingSlots, search, sortBy, limit } =
       request.query;
 
@@ -159,7 +166,7 @@ productRouter.get("/", async (request, response) => {
 
     // Grinding slots (array match)
     if (grindingSlots) {
-      query.grindingSlots = { $in: [grindingSlots] };
+      query.grindingSlots = { $in: grindingSlots.split(",") };
     }
 
     // Search

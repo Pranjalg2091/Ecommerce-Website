@@ -3,6 +3,7 @@ import dotenv from "dotenv";
 import Product from "./models/productSchema.js";
 import User from "./models/userSchema.js";
 import products from "./data/products.js";
+import Cart from "./models/cartSchema.js";
 
 dotenv.config();
 
@@ -12,12 +13,12 @@ mongoose.connect(process.env.MONGO_URI);
 // Function to seed Data
 const seedData = async () => {
   try {
-
     console.log("Seeding started...");
 
     // Clear Existing Data
     await Product.deleteMany();
     await User.deleteMany();
+    await Cart.deleteMany();
 
     // Create a Default Admin
     const createdUser = await User.create({

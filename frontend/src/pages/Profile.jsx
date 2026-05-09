@@ -1,8 +1,27 @@
-import React from "react";
+import React, { useEffect } from "react";
 import MyOrdersPage from "./MyOrdersPage";
-
+import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import { logout } from "../redux/slices/authSlice.js";
+import { clearCart } from "../redux/slices/cartSlice.js";
 
 const Profile = () => {
+  const { user } = useSelector((state) => state.auth);
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    if (!user) {
+      navigate("/login");
+    }
+  }, [user, navigate]);
+
+  const handleLogout = () => {
+    dispatch(logout());
+    dispatch(clearCart());
+    navigate("/login");
+  };
+
   return (
     <div className="min-h-screen flex flex-col">
       <div className="flex-grow container mx-auto p-4 md:p-6">
@@ -10,12 +29,12 @@ const Profile = () => {
           {/* Left Section */}
           <div className="w-full md:w-1/3 lg:w-1/4 shadow-sm rounded-lg p-6">
             <h1 className="text-2xl md:text-3xl font-dm-serif mb-4">
-              John Doe
+              {user?.name}
             </h1>
             <p className="text-lg font-manrope text-body mb-4">
-              john@example.com
+              {user?.email}
             </p>
-            <button className="w-full bg-error hover:bg-error-hover text-white font-manrope font-semibold py-2 px-4 rounded">
+            <button onClick={handleLogout} className="w-full bg-error hover:bg-error-hover text-white font-manrope font-semibold py-2 px-4 rounded">
               Logout
             </button>
           </div>
@@ -24,7 +43,6 @@ const Profile = () => {
           <div className="w-full md:w-2/3 lg:w-3/4">
             <MyOrdersPage />
           </div>
-
         </div>
       </div>
     </div>

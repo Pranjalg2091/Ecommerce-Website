@@ -20,49 +20,73 @@ import ProductFormPage from "./components/Admin/ProductFormPage.jsx";
 import OrderManagement from "./components/Admin/OrderManagement.jsx";
 import AboutUsPage from "./pages/AboutUsPage.jsx";
 import ContactUsPage from "./pages/ContactUsPage.jsx";
+import AdminProductDetails from "./components/Admin/AdminProductDetails.jsx";
+
+import { Provider } from "react-redux";
+import store from "./redux/store.js";
+import ProtectedRoute from "./components/Common/ProtectedRoute.jsx";
 
 const App = () => {
   return (
-    <BrowserRouter>
-      <Toaster position="top-right" />
-      <Routes>
-        <Route path="/" element={<UserLayout />}>
-          {/* User Layout Starts Here */}
+    <Provider store={store}>
+      <BrowserRouter
+        future={{ v7_startTransition: true, v7_relativeSplatPath: true }}
+      >
+        <Toaster position="top-right" />
 
-          <Route index element={<Home />} />
-         
-          <Route path="products/:id" element={<ProductDetails showSimilar={true} />} />
+        <Routes>
+          <Route path="/" element={<UserLayout />}>
+            {/* User Layout Starts Here */}
 
-          <Route path="about" element={<AboutUsPage />} />
-          <Route path="contact" element={<ContactUsPage />} />
+            <Route index element={<Home />} />
 
-          <Route path="login" element={<Login />} />
-          <Route path="registration" element={<Registration />} />
-          <Route path="profile" element={<Profile />} />
+            <Route
+              path="products/:id"
+              element={<ProductDetails showSimilar={true} />}
+            />
 
-          <Route path="collections/:collection" element={<CollectionPage />} />
-          
-          <Route path="checkout" element={<Checkout />} />
+            <Route path="about" element={<AboutUsPage />} />
+            <Route path="contact" element={<ContactUsPage />} />
+
+            <Route path="login" element={<Login />} />
+            <Route path="registration" element={<Registration />} />
+            <Route path="profile" element={<Profile />} />
+
+            <Route
+              path="collections/:collection"
+              element={<CollectionPage />}
+            />
+
+            <Route path="checkout" element={<Checkout />} />
+            <Route
+              path="order-confirmation"
+              element={<OrderConfirmationPage />}
+            />
+            <Route path="order/:id" element={<OrderDetailsPage />} />
+            <Route path="my-orders" element={<MyOrdersPage />} />
+          </Route>
+          {/* User Layout Ends Here */}
+
+          {/* Admin Layout Starts Here */}
           <Route
-            path="order-confirmation"
-            element={<OrderConfirmationPage />}
-          />
-          <Route path="order/:id" element={<OrderDetailsPage />} />
-          <Route path="my-orders" element={<MyOrdersPage />} />
-        </Route>
-        {/* User Layout Ends Here */}
-
- {/* Admin Layout Starts Here */}
-        <Route path="admin" element={<AdminLayout />}>
-          <Route index element={<AdminHomePage />} />
-          <Route path="users" element={<UserManagement />} />
-          <Route path="products" element={<ProductManagement />} /> 
-          <Route path="products/create" element={<ProductFormPage />} />
-          <Route path="products/:id/edit" element={<ProductFormPage />} />
-          <Route path="orders" element={<OrderManagement />} />
-        </Route>
-      </Routes>
-    </BrowserRouter>
+            path="admin"
+            element={
+              <ProtectedRoute role="admin">
+                <AdminLayout />
+              </ProtectedRoute>
+            }
+          >
+            <Route index element={<AdminHomePage />} />
+            <Route path="users" element={<UserManagement />} />
+            <Route path="products" element={<ProductManagement />} />
+            <Route path="products/create" element={<ProductFormPage />} />
+            <Route path="products/:id/edit" element={<ProductFormPage />} />
+            <Route path="products/:id" element={<AdminProductDetails />} />
+            <Route path="orders" element={<OrderManagement />} />
+          </Route>
+        </Routes>
+      </BrowserRouter>
+    </Provider>
   );
 };
 

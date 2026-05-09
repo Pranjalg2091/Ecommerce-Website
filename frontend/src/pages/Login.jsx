@@ -1,15 +1,41 @@
-import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import React, { use, useEffect, useState } from "react";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import loginImage from "../assets/login-image.jpg";
+import { loginUser } from "../redux/slices/authSlice.js";
+import { useDispatch, useSelector } from "react-redux";
+import { mergeCart } from "../redux/slices/cartSlice.js";
 
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-   const handleSubmit = (e) => {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const location = useLocation();
+  const { user, guestId, loading } = useSelector((state) => state.auth);
+  const { cart } = useSelector((state) => state.cart);
+
+  // get redirect parameter and check if it checkout or something
+  const redirect = new URLSearchParams(location.search).get("redirect") || "/";
+  const isCheckoutRedirect = redirect.includes("checkout");
+
+  useEffect(() => {
+    if (user) {
+      if (cart?.products.length > 0 && guestId) {
+        dispatch(mergeCart({ guestId, user })).then(() => {
+          navigate(isCheckoutRedirect ? "/checkout" : "/");
+        });
+      } else {
+        navigate(isCheckoutRedirect ? "/checkout" : "/");
+      }
+    }
+  }, [user, guestId, navigate, isCheckoutRedirect, cart, dispatch]);
+
+
+  const handleSubmit = (e) => {
     e.preventDefault();
     // Handle login logic here
-    console.log("User Logged In:", { email, password });
+    dispatch(loginUser({ email, password }));
   };
 
   return (
@@ -17,7 +43,7 @@ const Login = () => {
       <div className="w-full md:w-1/2 flex flex-col justify-center items-center p-8 md:p-12">
         <form
           action=""
-          className="w-full max-w-md bg-white p-8 rounded-sm border shadow-sm"
+          className="w-full max-w-md bg-white p-8 rounded-sm border border-border shadow-sm"
           onSubmit={handleSubmit}
         >
           <h2 className="text-4xl text-heading font-dm-serif text-center mb-6">
@@ -62,11 +88,14 @@ const Login = () => {
             type="submit"
             className="w-full bg-primary-500 text-white py-2 px-4 rounded-sm hover:bg-primary-600 focus:outline-none"
           >
-            Login
+            {loading ? "Loading..." : "Login"}
           </button>
           <p className="text-center text-body mt-4">
             Don't have an account?{" "}
-            <Link to="/register" className="text-secondary-600 hover:underline">
+            <Link
+              to={`/registration?redirect=${encodeURIComponent(redirect)}`}
+              className="text-secondary-600 hover:underline"
+            >
               Register
             </Link>
           </p>
@@ -76,10 +105,13 @@ const Login = () => {
       {/* Right Side Section */}
       <div className="hidden md:block w-1/2 bg-neutral-700">
         <div className="h-full flex flex-col justify-center items-center">
-            <img src={loginImage} alt="Login to Account" className="h-[600px] w-full object-cover" />
+          <img
+            src={loginImage}
+            alt="Login to Account"
+            className="h-[600px] w-full object-cover"
+          />
         </div>
       </div>
-
     </div>
   );
 };

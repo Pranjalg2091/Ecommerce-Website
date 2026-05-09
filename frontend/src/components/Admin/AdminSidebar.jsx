@@ -6,22 +6,29 @@ import { FiLogOut } from "react-icons/fi";
 import { LuClipboardList } from "react-icons/lu";
 import { AiOutlineShop } from "react-icons/ai";
 import { BsBoxSeam } from "react-icons/bs";
+import { useDispatch } from "react-redux";
+import { logout } from "../../redux/slices/authSlice";
+import { clearCart } from "../../redux/slices/cartSlice";
 
 const AdminSidebar = () => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+
   const handleLogout = () => {
+    dispatch(logout());
+    dispatch(clearCart());
     navigate("/");
   };
 
   return (
-    <div className="h-full flex flex-col p-5 font-manrope">
+   <div className="h-full flex flex-col p-3 md:p-5 font-manrope overflow-y-auto">
       {/* Logo */}
       <Link to="/admin" className="flex items-center justify-center mb-6">
-        <img src={adminLogo} alt="GrainMart Logo" className="h-12" />
+        <img src={adminLogo} alt="GrainMart Logo" className="h-10 md:h-12" />
       </Link>
 
       {/* Title */}
-      <h2 className="text-xl font-dm-serif text-white mb-6 text-center tracking-wide">
+      <h2 className="text-lg md:text-xl font-dm-serif text-white mb-5 md:mb-6 text-center tracking-wide">
         Admin Dashboard
       </h2>
 
@@ -30,7 +37,7 @@ const AdminSidebar = () => {
         <NavLink
           to="/admin/users"
           className={({ isActive }) =>
-            `flex items-center px-4 py-3 rounded-md space-x-3 transition-all duration-200 ${
+            `flex items-center px-3 md:px-4 py-2.5 md:py-3 rounded-md space-x-3 transition-all duration-200 ${
               isActive
                 ? "bg-primary-500 text-white shadow"
                 : "text-neutral-300 hover:bg-gray-800 hover:text-white"
@@ -44,7 +51,7 @@ const AdminSidebar = () => {
         <NavLink
           to="/admin/products"
           className={({ isActive }) =>
-            `flex items-center px-4 py-3 rounded-md space-x-3 transition-all duration-200 ${
+            `flex items-center px-3 md:px-4 py-2.5 md:py-3 rounded-md space-x-3 transition-all duration-200 ${
               isActive
                 ? "bg-primary-500 text-white shadow"
                 : "text-neutral-300 hover:bg-gray-800 hover:text-white"
@@ -57,7 +64,7 @@ const AdminSidebar = () => {
         <NavLink
           to="/admin/orders"
           className={({ isActive }) =>
-            `flex items-center px-4 py-3 rounded-md space-x-3 transition-all duration-200 ${
+            `flex items-center px-3 md:px-4 py-2.5 md:py-3 rounded-md space-x-3 transition-all duration-200 ${
               isActive
                 ? "bg-primary-500 text-white shadow"
                 : "text-neutral-300 hover:bg-gray-800 hover:text-white"
@@ -70,7 +77,7 @@ const AdminSidebar = () => {
         <NavLink
           to="/"
           className={({ isActive }) =>
-            `flex items-center px-4 py-3 rounded-md space-x-3 transition-all duration-200 ${
+            `flex items-center px-3 md:px-4 py-2.5 md:py-3 rounded-md space-x-3 transition-all duration-200 ${
               isActive
                 ? "bg-primary-500 text-white shadow"
                 : "text-neutral-300 hover:bg-gray-800 hover:text-white"
@@ -93,7 +100,7 @@ const AdminSidebar = () => {
       </div>
 
       {/* Bottom space */}
-      <div className="mt-auto text-xs text-neutral-500 text-center pt-6">
+      <div className="mt-auto text-[10px] md:text-xs text-neutral-500 text-center pt-5 md:pt-6">
         © GrainMart Admin
       </div>
     </div>

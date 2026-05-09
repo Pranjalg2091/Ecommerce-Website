@@ -7,7 +7,7 @@ const FilterSidebar = () => {
 
   const [filters, setFilters] = useState({
     category: "",
-    sizes: [],
+    size: [],
     grindingSlots: [],
   });
 
@@ -26,18 +26,21 @@ const FilterSidebar = () => {
     "8:00 PM - 9:00 PM",
   ];
 
-//   useEffect(() => {
-//     const params = Object.fromEntries([...searchParams]);
-//     setFilters({
-//       category: params.category || "",
-//       sizes: params.size || [],
-//       grindingSlots: params.grindingSlots || [],
-//     });
-//   }, [searchParams]);
-
   useEffect(() => {
-    setSearchParams({}); // URL clean
-  }, []);
+    const params = Object.fromEntries([...searchParams]);
+
+    setFilters({
+      category: params.category || "",
+      size: params.size ? params.size.split(",") : [],
+      grindingSlots: params.grindingSlots
+        ? params.grindingSlots.split(",")
+        : [],
+    });
+  }, [searchParams]);
+
+  // useEffect(() => {
+  //   setSearchParams({});
+  // }, []);
 
   //   Handle filter changes and update URL search params
   const handleFilterChange = (e) => {
@@ -57,19 +60,23 @@ const FilterSidebar = () => {
     updateURLParams(newFilters);
   };
 
-  const updateURLParams = (newFilters) => {
-    const params = new URLSearchParams();
+const updateURLParams = (newFilters) => {
+  const params = new URLSearchParams();
 
-    Object.keys(newFilters).forEach((key) => {
-      if (Array.isArray(newFilters[key]) && newFilters[key].length > 0) {
-        params.set(key, newFilters[key].join(","));
-      } else if (newFilters[key]) {
-        params.set(key, newFilters[key]);
-      }
-    });
-    setSearchParams(params);
-    // navigate(`?${params.toString()}`);
-  };
+  if (newFilters.category) {
+    params.set("category", newFilters.category);
+  }
+
+  if (newFilters.size.length > 0) {
+    params.set("size", newFilters.size.join(","));
+  }
+
+  if (newFilters.grindingSlots.length > 0) {
+    params.set("grindingSlots", newFilters.grindingSlots.join(","));
+  }
+
+  setSearchParams(params);
+};
 
   return (
     <div className="p-4 font-manrope">
@@ -106,9 +113,9 @@ const FilterSidebar = () => {
             <input
               type="checkbox"
               id={size}
-              name="sizes"
+              name="size"
               value={size}
-              checked={filters.sizes.includes(size)}
+              checked={filters.size.includes(size)}
               onChange={handleFilterChange}
               className="mr-2 w-4 h-4 accent-info focus:ring-0 focus:ring-info-hover transition-all"
             />

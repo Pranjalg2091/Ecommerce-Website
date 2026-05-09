@@ -25,14 +25,14 @@ const Hero = () => {
 
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mt-6">
             <Link
-              to="/products"
+              to="/collections/all"
               className="w-full sm:w-auto text-center bg-primary-500 text-white px-6 py-3 rounded-sm text-lg hover:bg-primary-700 transition-all"
             >
               Shop Grains
             </Link>
 
             <Link
-              to="/grinding-slots"
+              to="/collections/all"
               className="w-full sm:w-auto text-center bg-secondary-500 text-white px-6 py-3 rounded-sm text-lg hover:bg-secondary-700 transition-all"
             >
               Book Grinding Slot

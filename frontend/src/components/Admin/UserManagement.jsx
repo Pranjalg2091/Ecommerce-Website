@@ -1,27 +1,48 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { AiOutlineDelete } from "react-icons/ai";
+import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import {
+  addUser,
+  deleteUser,
+  fetchUsers,
+  updateUser,
+} from "../../redux/slices/adminSlice";
+import Pagination from "../Common/Pagination";
+import { IoArrowBack } from "react-icons/io5";
 
 const UserManagement = () => {
-  const [users, setUsers] = useState([
-    {
-      _id: "12345",
-      name: "John Doe",
-      email: "john.doe@example.com",
-      role: "Admin",
-    },
-    {
-      _id: "12346",
-      name: "Jane Smith",
-      email: "jane.smith@example.com",
-      role: "Customer",
-    },
-    {
-      _id: "12347",
-      name: "Bob Johnson",
-      email: "bob.johnson@example.com",
-      role: "Customer",
-    },
-  ]);
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage, setItemsPerPage] = useState(10);
+
+  const { user } = useSelector((state) => state.auth);
+
+  const { users, loading, error } = useSelector((state) => state.admin);
+
+  // ✅ PAGINATION LOGIC
+  const indexOfLast = currentPage * itemsPerPage;
+  const indexOfFirst = indexOfLast - itemsPerPage;
+
+  const currentUsers = users.slice(indexOfFirst, indexOfLast);
+
+  useEffect(() => {
+    if (user && user.role !== "admin") {
+      navigate("/");
+    }
+  }, [user, navigate]);
+
+  useEffect(() => {
+    if (user && user.role === "admin") {
+      dispatch(fetchUsers());
+    }
+  }, [dispatch, user]);
+
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }, [currentPage]);
 
   const [formData, setFormData] = useState({
     name: "",
@@ -40,14 +61,14 @@ const UserManagement = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
 
+    dispatch(addUser(formData));
+
     const newUser = {
       _id: Date.now().toString(),
       name: formData.name,
       email: formData.email,
       role: formData.role,
     };
-
-    setUsers([...users, newUser]); // 🔥 add user
 
     setFormData({
       name: "",
@@ -58,22 +79,29 @@ const UserManagement = () => {
   };
 
   const handleRoleChange = (userId, newRole) => {
-    const updatedUsers = users.map((user) =>
-      user._id === userId ? { ...user, role: newRole } : user,
-    );
-
-    setUsers(updatedUsers);
+    dispatch(updateUser({ id: userId, role: newRole }));
   };
 
   const handleDeleteUser = (userId) => {
     if (window.confirm("Are you sure you want to delete this user?")) {
-      const filteredUsers = users.filter((user) => user._id !== userId);
-      setUsers(filteredUsers);
+      dispatch(deleteUser(userId));
     }
   };
   return (
     <div className="max-w-7xl mx-auto p-6 font-manrope">
-      <h2 className="text-2xl font-dm-serif mb-6">User Management</h2>
+      <div className="flex items-center gap-3 mb-4">
+        <button
+          onClick={() => window.history.back()}
+          className="p-2 rounded-md hover:bg-gray-100 transition"
+        >
+          <IoArrowBack className="text-xl" />
+        </button>
+
+        <h2 className="text-xl md:text-2xl font-dm-serif text-heading">User Management</h2>
+      </div>
+
+      {loading && <p>Loading...</p>}
+      {error && <p>Error: {error}</p>}
 
       {/* Add new user form */}
       <div className="bg-white p-6 rounded-lg border border-border mb-6">
@@ -92,7 +120,7 @@ const UserManagement = () => {
                 value={formData.name}
                 onChange={handleChange}
                 placeholder="Enter name"
-                className="w-full px-3 py-2.5 rounded-lg border border-border focus:ring-2 focus:ring-primary-500 outline-none transition"
+                className="w-full px-3 py-2.5 rounded-sm border border-border focus:ring-2 focus:ring-primary-500 outline-none transition"
                 required
               />
             </div>
@@ -106,7 +134,7 @@ const UserManagement = () => {
                 value={formData.email}
                 onChange={handleChange}
                 placeholder="Enter email"
-                className="w-full px-3 py-2.5 rounded-lg border border-border focus:ring-2 focus:ring-primary-500 outline-none transition"
+                className="w-full px-3 py-2.5 rounded-sm border border-border focus:ring-2 focus:ring-primary-500 outline-none transition"
                 required
               />
             </div>
@@ -122,7 +150,7 @@ const UserManagement = () => {
                 value={formData.password}
                 onChange={handleChange}
                 placeholder="Enter password"
-                className="w-full px-3 py-2.5 rounded-lg border border-border focus:ring-2 focus:ring-primary-500 outline-none transition"
+                className="w-full px-3 py-2.5 rounded-sm border border-border focus:ring-2 focus:ring-primary-500 outline-none transition"
                 required
               />
             </div>
@@ -134,7 +162,7 @@ const UserManagement = () => {
                 name="role"
                 value={formData.role}
                 onChange={handleChange}
-                className="w-full px-3 py-2.5 rounded-lg border border-border focus:ring-2 focus:ring-primary-500 outline-none transition"
+                className="w-full px-3 py-2.5 rounded-sm border border-border focus:ring-2 focus:ring-primary-500 outline-none transition"
               >
                 <option value="customer">Customer</option>
                 <option value="admin">Admin</option>
@@ -146,7 +174,7 @@ const UserManagement = () => {
           <div className="mt-6">
             <button
               type="submit"
-              className="bg-primary-500 hover:bg-primary-600 text-white px-6 py-2.5 rounded-md transition font-medium"
+              className="bg-primary-500 hover:bg-primary-600 text-white px-6 py-2.5 rounded-sm transition font-medium"
             >
               Add User
             </button>
@@ -156,9 +184,9 @@ const UserManagement = () => {
 
       {/* User List Management */}
       <div className="overflow-x-auto shadow-md sm:rounded-lg">
-        <table className="min-w-full text-left text-body">
+        <table className="min-w-full text-left text-sm text-body bg-white">
           {/* Table Header */}
-          <thead className="bg-neutral-100 text-sm uppercase text-heading">
+          <thead className="bg-neutral-100 uppercase text-heading">
             <tr>
               <th className="py-3 px-4">Name</th>
               <th className="py-3 px-4">Email</th>
@@ -168,7 +196,7 @@ const UserManagement = () => {
           </thead>
           {/* User List */}
           <tbody>
-            {users.map((user) => (
+            {currentUsers.map((user) => (
               <tr
                 key={user._id}
                 className="border-b border-border cursor-pointer hover:bg-neutral-100 transition-colors"
@@ -218,6 +246,19 @@ const UserManagement = () => {
             ))}
           </tbody>
         </table>
+
+        <div className="mt-4 px-2">
+          <Pagination
+            currentPage={currentPage}
+            totalItems={users.length}
+            itemsPerPage={itemsPerPage}
+            onPageChange={setCurrentPage}
+            onLimitChange={(limit) => {
+              setItemsPerPage(limit);
+              setCurrentPage(1); // reset page
+            }}
+          />
+        </div>
       </div>
     </div>
   );

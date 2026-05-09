@@ -1,43 +1,25 @@
 import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { Link, useParams } from "react-router-dom";
+import { fetchOrderDetails } from "../redux/slices/orderSlice.js";
 
 const OrderDetailsPage = () => {
   const { id } = useParams();
-  const [orderDetails, setOrderDetails] = useState(null);
+
+  const dispatch = useDispatch();
+  const { orderDetails, loading, error } = useSelector((state) => state.orders);
 
   useEffect(() => {
-    const mockOrderDetails = {
-      _id: id,
-      createdAt: new Date(),
-      isPaid: true,
-      isDelivered: false,
-      paymentMethod: "Razorpay",
-      shippingMethod: "Standard Shipping",
-      shippingAddress: {
-        city: "Indore",
-        address: "14, Manik Bagh Road, Palasia",
-      },
-      orderItems: [
-        {
-          productId: 1,
-          name: "Wheat Flour",
-          size: "5kg",
-          quantity: 1,
-          price: 250,
-          image: "https://picsum.photos/200?random=8",
-        },
-        {
-          productId: 2,
-          name: "Sharbati Wheat",
-          size: "10kg",
-          quantity: 2,
-          price: 840,
-          image: "https://picsum.photos/200?random=9",
-        },
-      ],
-    };
-    setOrderDetails(mockOrderDetails);
-  }, [id]);
+    dispatch(fetchOrderDetails(id));
+  }, [dispatch, id]);
+
+  if (loading) {
+    return <p>Loading...</p>;
+  }
+
+  if (error) {
+    return <p>Error: {error}</p>;
+  }
 
   return (
     <div className="max-w-7xl mx-auto p-4 sm:p-6 font-manrope">

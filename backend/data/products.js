@@ -334,7 +334,7 @@ const products = [
   },
 
   {
-    name: "Khapli Wheat Organic (Emmer)",
+    name: "Khapli Wheat Organic",
     description:
       "Khapli Wheat, also known as Emmer wheat, is an ancient grain known for its exceptional health benefits. It is naturally low in gluten and rich in fiber, making it suitable for individuals looking for healthier alternatives. This organic variant is sourced from chemical-free farms and minimally processed to retain maximum nutrition. It is ideal for preparing healthy rotis and traditional recipes.",
     category: "Organic Grains",
@@ -363,17 +363,17 @@ const products = [
     images: [
       {
         url: "https://picsum.photos/600/600?random=40",
-        altText: "Khapli Wheat Organic (Emmer) - Organic wheat grains",
+        altText: "Khapli Wheat Organic - Organic wheat grains",
       },
       {
         url: "https://picsum.photos/600/600?random=41",
         altText:
-          "Khapli Wheat Organic (Emmer) - Close-up of organic wheat grains",
+          "Khapli Wheat Organic - Close-up of organic wheat grains",
       },
       {
         url: "https://picsum.photos/600/600?random=42",
         altText:
-          "Khapli Wheat Organic (Emmer) - Freshly harvested organic wheat grains",
+          "Khapli Wheat Organic - Freshly harvested organic wheat grains",
       },
     ],
     features: [
@@ -585,7 +585,7 @@ const products = [
     storage:
       "Keep in a cool, dry place in an airtight container. Avoid exposure to moisture to maintain freshness and quality.",
     isFeatured: true,
-      isPublished: true,
+    isPublished: true,
   },
 
   {

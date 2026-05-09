@@ -7,50 +7,52 @@ import { Link } from "react-router-dom";
 import { FiArrowRight } from "react-icons/fi";
 
 const CategorySection = () => {
-
   const categories = [
     {
       title: "Wheat",
       desc: "High-quality wheat sourced from trusted farms.",
-      image: CategoryImage1
+      image: CategoryImage1,
+      slug: "wheat",
     },
     {
       title: "Wheat Flour",
       desc: "Freshly ground flour for soft and healthy rotis.",
-      image: CategoryImage2
+      image: CategoryImage2,
+      slug: "flour",
     },
     {
       title: "Organic Grains",
       desc: "Natural and chemical-free grains for your family.",
-      image: CategoryImage3
+      image: CategoryImage3,
+      slug: "organic",
     },
     {
       title: "Grinding Service",
       desc: "Bring your wheat or order from us and get it freshly ground.",
-      image: CategoryImage4
-    }
+      image: CategoryImage4,
+      slug: "grinding",
+    },
   ];
 
   return (
     <section className="py-16 px-4 lg:px-0 bg-white font-manrope">
-
       {/* 🔥 Heading + Description */}
       <div className="text-center max-w-2xl mx-auto mb-12">
-        <h2 className="text-3xl font-dm-serif mb-4">
-          Shop By Category
-        </h2>
+        <h2 className="text-3xl font-dm-serif mb-4">Shop By Category</h2>
 
         <p className="font-manrope text-lg text-body mb-8">
-          Discover a wide range of high-quality grains and freshly ground flour, 
-          carefully selected to bring <br />freshness, taste, and nutrition to your home.
+          Discover a wide range of high-quality grains and freshly ground flour,
+          carefully selected to bring <br />
+          freshness, taste, and nutrition to your home.
         </p>
       </div>
 
       <div className="container mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-
         {categories.map((category, index) => (
-          <div key={index} className="relative overflow-hidden rounded-xl group cursor-pointer">
-
+          <div
+            key={index}
+            className="relative overflow-hidden rounded-xl group cursor-pointer"
+          >
             <img
               src={category.image}
               alt={category.title}
@@ -60,25 +62,23 @@ const CategorySection = () => {
             <div className="absolute inset-0 bg-linear-to-t from-black/90 via-black/30 to-transparent"></div>
 
             <div className="absolute bottom-4 left-4 text-white max-w-[80%]">
-              <h2 className="text-xl font-dm-serif mb-2">
-                {category.title}
-              </h2>
+              <h2 className="text-xl font-dm-serif mb-2">{category.title}</h2>
 
-              <p className="font-manrope text-sm mb-3">
-                {category.desc}
-              </p>
+              <p className="font-manrope text-sm mb-3">{category.desc}</p>
 
               <Link
-                to="/"
+                to={
+                  category.slug === "grinding"
+                    ? "/collections/all"
+                    : `/collections/all?category=${category.slug}`
+                }
                 className="flex items-center gap-2 text-sm font-medium hover:underline"
               >
                 Explore More <FiArrowRight className="text-lg" />
               </Link>
             </div>
-
           </div>
         ))}
-
       </div>
     </section>
   );

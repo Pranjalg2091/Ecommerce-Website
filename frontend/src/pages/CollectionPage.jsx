@@ -3,11 +3,29 @@ import { FiFilter } from "react-icons/fi";
 import FilterSidebar from "../components/Products/FilterSidebar";
 import SortOptions from "../components/Products/SortOptions.jsx";
 import ProductGrid from "../components/Products/ProductGrid";
+import { useDispatch, useSelector } from "react-redux";
+import { useParams, useSearchParams } from "react-router-dom";
+import { fetchProductsByFilters } from "../redux/slices/productSlice.js";
 
 const CollectionPage = () => {
-  const [products, setProducts] = useState([]);
+  const { collection } = useParams();
+  const [searchParams] = useSearchParams();
+  const dispatch = useDispatch();
+  const { products, loading, error } = useSelector((state) => state.products);
+
+  const queryParams = {
+    category: searchParams.get("category") || "",
+    size: searchParams.get("size") || "",
+    grindingSlots: searchParams.get("grindingSlots") || "",
+    sortBy: searchParams.get("sortBy") || "",
+  };
+
   const sidebarRef = useRef(null);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+
+  useEffect(() => {
+  dispatch(fetchProductsByFilters({ collection, ...queryParams }));
+}, [dispatch, collection, searchParams.toString()]);
 
   const toggleSidebar = () => {
     setIsSidebarOpen(!isSidebarOpen);
@@ -26,104 +44,6 @@ const CollectionPage = () => {
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
-  }, []);
-
-  useEffect(() => {
-    // Simulate fetching products for the collection
-
-    setTimeout(() => {
-      const fetchedProducts = [
-        {
-          _id: "1",
-          name: "Sharbati Wheat",
-          price: 250,
-          images: [
-            {
-              url: "https://picsum.photos/500/500?random=1",
-              altText: "Sharbati Wheat",
-            },
-          ],
-        },
-        {
-          _id: "2",
-          name: "Sharbati Wheat",
-          price: 250,
-          images: [
-            {
-              url: "https://picsum.photos/500/500?random=2",
-              altText: "Sharbati Wheat",
-            },
-          ],
-        },
-        {
-          _id: "3",
-          name: "Sharbati Wheat",
-          price: 250,
-          images: [
-            {
-              url: "https://picsum.photos/500/500?random=3",
-              altText: "Sharbati Wheat",
-            },
-          ],
-        },
-        {
-          _id: "4",
-          name: "Sharbati Wheat",
-          price: 250,
-          images: [
-            {
-              url: "https://picsum.photos/500/500?random=4",
-              altText: "Sharbati Wheat",
-            },
-          ],
-        },
-        {
-          _id: "5",
-          name: "Sharbati Wheat",
-          price: 250,
-          images: [
-            {
-              url: "https://picsum.photos/500/500?random=5",
-              altText: "Sharbati Wheat",
-            },
-          ],
-        },
-        {
-          _id: "6",
-          name: "Sharbati Wheat",
-          price: 250,
-          images: [
-            {
-              url: "https://picsum.photos/500/500?random=6",
-              altText: "Sharbati Wheat",
-            },
-          ],
-        },
-        {
-          _id: "7",
-          name: "Sharbati Wheat",
-          price: 250,
-          images: [
-            {
-              url: "https://picsum.photos/500/500?random=7",
-              altText: "Sharbati Wheat",
-            },
-          ],
-        },
-        {
-          _id: "8",
-          name: "Sharbati Wheat",
-          price: 250,
-          images: [
-            {
-              url: "https://picsum.photos/500/500?random=8",
-              altText: "Sharbati Wheat",
-            },
-          ],
-        },
-      ];
-      setProducts(fetchedProducts);
-    }, 1000);
   }, []);
 
   return (
@@ -152,7 +72,7 @@ const CollectionPage = () => {
         <SortOptions />
 
         {/* Product Grid */}
-        <ProductGrid products={products} />
+        <ProductGrid products={products} loading={loading} error={error} />
       </div>
     </div>
   );

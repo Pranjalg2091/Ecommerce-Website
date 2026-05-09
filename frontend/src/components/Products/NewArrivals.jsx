@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { FiChevronLeft, FiChevronRight } from "react-icons/fi";
 import { Link } from "react-router-dom";
+import axios from "axios";
 
 const NewArrivals = () => {
   const scrollRef = useRef(null);
@@ -10,96 +11,22 @@ const NewArrivals = () => {
   const [canScrollLeft, setCanScrollLeft] = useState(false);
   const [canScrollRight, setCanScrollRight] = useState(true);
 
-  const newArrivals = [
-    {
-      _id: "1",
-      name: "Sharbati Wheat",
-      price: 250,
-      images: [
-        {
-          url: "https://picsum.photos/500/500?random=1",
-          altText: "Sharbati Wheat",
-        },
-      ],
-    },
-    {
-      _id: "2",
-      name: "Sharbati Wheat",
-      price: 250,
-      images: [
-        {
-          url: "https://picsum.photos/500/500?random=2",
-          altText: "Sharbati Wheat",
-        },
-      ],
-    },
-    {
-      _id: "3",
-      name: "Sharbati Wheat",
-      price: 250,
-      images: [
-        {
-          url: "https://picsum.photos/500/500?random=3",
-          altText: "Sharbati Wheat",
-        },
-      ],
-    },
-    {
-      _id: "4",
-      name: "Sharbati Wheat",
-      price: 250,
-      images: [
-        {
-          url: "https://picsum.photos/500/500?random=4",
-          altText: "Sharbati Wheat",
-        },
-      ],
-    },
-    {
-      _id: "5",
-      name: "Sharbati Wheat",
-      price: 250,
-      images: [
-        {
-          url: "https://picsum.photos/500/500?random=5",
-          altText: "Sharbati Wheat",
-        },
-      ],
-    },
-    {
-      _id: "6",
-      name: "Sharbati Wheat",
-      price: 250,
-      images: [
-        {
-          url: "https://picsum.photos/500/500?random=6",
-          altText: "Sharbati Wheat",
-        },
-      ],
-    },
-    {
-      _id: "7",
-      name: "Sharbati Wheat",
-      price: 250,
-      images: [
-        {
-          url: "https://picsum.photos/500/500?random=7",
-          altText: "Sharbati Wheat",
-        },
-      ],
-    },
-    {
-      _id: "8",
-      name: "Sharbati Wheat",
-      price: 250,
-      images: [
-        {
-          url: "https://picsum.photos/500/500?random=8",
-          altText: "Sharbati Wheat",
-        },
-      ],
-    },
-  ];
+  const [newArrivals, setNewArrivals] = useState([]);
+
+  useEffect(() => {
+    const fetchNewArrivals = async () => {
+      try {
+        const response = await axios.get(
+          `${import.meta.env.VITE_BACKEND_URL}/api/products/new-arrivals`,
+        );
+        setNewArrivals(response.data);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    fetchNewArrivals();
+  }, []);
 
   const handleMouseDown = (e) => {
     setIsDragging(true);
@@ -142,7 +69,7 @@ const NewArrivals = () => {
       updateScrollButtons();
       return () => container.removeEventListener("scroll", updateScrollButtons);
     }
-  }, []);
+  }, [newArrivals]);
 
   return (
     <section className="py-16 px-4 lg:px-0">
@@ -203,9 +130,9 @@ const NewArrivals = () => {
             />
 
             <div className="absolute bottom-0 left-0 right-0 bg-opacity-50 backdrop-blur-md text-white p-4 rounded-b-lg">
-              <Link to={`/product/${product._id}`} className="block">
+              <Link to={`/products/${product._id}`} className="block">
                 <h4 className="font-dm-serif">{product.name}</h4>
-                <p className="mt-1">&#8377;{product.price}</p>
+                <p className="mt-1">₹{product.basePrice || product.sizes?.[0]?.price}</p>
               </Link>
             </div>
           </div>

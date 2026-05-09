@@ -1,40 +1,30 @@
-import React from "react";
-
-const checkout = {
-  _id: "12345",
-  createdAt: new Date(),
-  checkoutItems: [
-    {
-      productId: 1,
-      name: "Wheat Flour",
-      size: "5kg",
-      quantity: 1,
-      price: 250,
-      image: "https://picsum.photos/200?random=8",
-    },
-    {
-      productId: 2,
-      name: "Sharbati Wheat",
-      size: "10kg",
-      quantity: 2,
-      price: 840,
-      image: "https://picsum.photos/200?random=9",
-    },
-  ],
-  shippingAddress: {
-    address: "14, Manik Bagh Road, Palasia",
-    city: "Indore",
-  },
-};
+import React, { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import { clearCart } from "../redux/slices/cartSlice.js";
 
 const OrderConfirmationPage = () => {
+
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const { checkout } = useSelector((state) => state.checkout);
+
+
+// Clear the cart when the order is confirmed
+useEffect(() => {
+  if (checkout && checkout._id) {
+    dispatch(clearCart());
+     localStorage.removeItem("cart");
+  } else {
+    navigate("/my-orders");
+  }
+}, [checkout, dispatch, navigate]);
+
   const calculateEstimateDelivery = (createdAt) => {
     const orderDate = new Date(createdAt);
-    orderDate.setDate(orderDate.getDate() + 5);
+    orderDate.setDate(orderDate.getDate() + 1);
     return orderDate.toLocaleDateString();
 
-    // const estimatedDate = new Date(orderDate);
-    // estimatedDate.setDate(orderDate.getDate() + 5);
   };
 
   return (

@@ -1,11 +1,40 @@
 import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useLocation } from "react-router-dom";
 import { AiOutlineEdit } from "react-icons/ai";
 import { AiOutlineDelete } from "react-icons/ai";
 import { LuPlus } from "react-icons/lu";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  deleteProduct,
+  fetchAdminProducts,
+} from "../../redux/slices/adminProductSlice";
+import Pagination from "../Common/Pagination";
+import { IoArrowBack } from "react-icons/io5";
 
 const ProductManagement = () => {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  const { products, loading, error } = useSelector(
+    (state) => state.adminProducts,
+  );
+
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage, setItemsPerPage] = useState(10);
+
+  const indexOfLast = currentPage * itemsPerPage;
+  const indexOfFirst = indexOfLast - itemsPerPage;
+  const currentProducts = products.slice(indexOfFirst, indexOfLast);
+
+  useEffect(() => {
+    dispatch(fetchAdminProducts());
+  }, [dispatch]);
+
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }, [currentPage]);
+
   const location = useLocation();
 
   const [selectedVariants, setSelectedVariants] = useState({});
@@ -17,70 +46,35 @@ const ProductManagement = () => {
     }));
   };
 
-useEffect(() => {
-  if (location.state?.newProduct) {
-    setProducts((prev) => [
-      ...prev,
-      {
-        ...location.state.newProduct,
-        stock: location.state.newProduct.countInStock, // ✅ FIX
-        image: location.state.newProduct.images?.[0]?.url, // ✅ FIX
-      },
-    ]);
-  }
-}, [location.state]);
-
-  const [products, setProducts] = useState([
-    {
-      _id: "12345",
-      name: "Wheat Flour",
-      sku: 123456789,
-      stock: 25,
-      createdAt: new Date(),
-      image: "https://picsum.photos/600/600?random=1",
-      sizes: [
-        { weight: "5kg", price: 250 },
-        { weight: "10kg", price: 480 },
-        { weight: "25kg", price: 1250 },
-      ],
-    },
-    {
-      _id: "45678",
-      name: "Ashirvaad Sharbati Wheat",
-      sku: 123456789,
-      stock: 25,
-      createdAt: new Date(),
-      image: "https://picsum.photos/600/600?random=5",
-      sizes: [
-        { weight: "5kg", price: 250 },
-        { weight: "10kg", price: 480 },
-        { weight: "25kg", price: 1250 },
-      ],
-    },
-    {
-      _id: "78901",
-      name: "Sharbati Wheat",
-      sku: 123456789,
-      stock: 0,
-      createdAt: new Date(),
-      image: "https://picsum.photos/600/600?random=8",
-      sizes: [
-        { weight: "5kg", price: 250 },
-        { weight: "10kg", price: 480 },
-        { weight: "25kg", price: 1250 },
-      ],
-    },
-  ]);
-
   const handleDelete = (id) => {
     if (window.confirm("Are you sure you want to delete the Product")) {
-      console.log("Delete Product with id:", id);
+      dispatch(deleteProduct(id));
     }
   };
 
+  if (loading) return <p>Loading...</p>;
+
+  if (error) return <p>Error: {error}</p>;
+
   return (
     <div className="max-w-7xl mx-auto p-6 font-manrope">
-      <h2 className="text-2xl font-dm-serif mb-6">Product Management</h2>
+      
+       {/* 🔙 HEADER WITH BACK */}
+      <div className="flex items-center justify-between mb-6 flex-wrap gap-4">
+        
+        <div className="flex items-center gap-3">
+          <button
+            onClick={() => window.history.back()}
+            className="p-2 rounded-md hover:bg-gray-100 transition"
+          >
+            <IoArrowBack className="text-xl" />
+          </button>
+
+          <h2 className="text-xl md:text-2xl font-dm-serif">
+            Product Management
+          </h2>
+        </div>
+      </div>
 
       <div className="flex justify-end mb-4">
         <Link
@@ -93,12 +87,11 @@ useEffect(() => {
       </div>
 
       <div className="overflow-x-auto shadow-md sm:rounded-lg">
-        <table className="min-w-full text-left bg-white text-body">
-          <thead className="bg-neutral-100 text-sm uppercase text-heading">
+        <table className="min-w-full text-left text-sm  bg-white text-body">
+          <thead className="bg-neutral-100 uppercase text-heading">
             <tr>
               <th className="px-4 py-3">Image</th>
               <th className="px-4 py-3">Name</th>
-
               <th className="px-4 py-3">SKU</th>
               <th className="px-4 py-3">Created</th>
               <th className="px-4 py-3">Price</th>
@@ -109,15 +102,17 @@ useEffect(() => {
           </thead>
           <tbody>
             {products.length > 0 ? (
-              products.map((product) => (
+              currentProducts.map((product) => (
                 <tr
                   key={product._id}
-                  className="border-b border-border cursor-pointer"
+                  onClick={() => navigate(`/admin/products/${product._id}`)}
+                  className="cursor-pointer"
                 >
                   {/* IMAGE */}
                   <td className="p-4">
                     <img
-                      src={product.image}
+                      src={product.images?.[0]?.url || "/placeholder.png"}
+                      alt={product.name}
                       className="w-14 h-14 object-cover rounded-md border border-border"
                     />
                   </td>
@@ -180,13 +175,13 @@ useEffect(() => {
                     <span
                       className={`px-3 py-1 rounded text-sm font-medium whitespace-nowrap 
                         ${
-                          product.stock > 0
+                          product.countInStock > 0
                             ? "bg-green-100 text-success"
                             : "bg-red-100 text-error"
                         }`}
                     >
-                      {product.stock > 0
-                        ? `${product.stock} in stock`
+                      {product.countInStock > 0
+                        ? `${product.countInStock} in stock`
                         : "Out of stock"}
                     </span>
                   </td>
@@ -252,6 +247,20 @@ useEffect(() => {
             )}
           </tbody>
         </table>
+
+        <div className="mt-4 px-2">
+          <Pagination
+            currentPage={currentPage}
+            totalItems={products.length}
+            itemsPerPage={itemsPerPage}
+            onPageChange={(page) => setCurrentPage(page)}
+            onLimitChange={(limit) => {
+              setItemsPerPage(limit);
+              setCurrentPage(1); // reset page
+            }}
+          />
+        </div>
+
       </div>
     </div>
   );

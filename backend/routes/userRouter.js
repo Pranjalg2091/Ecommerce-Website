@@ -14,21 +14,23 @@ userRouter.post("/register", async (request, response) => {
     if (user) {
       return response.status(400).json({ message: "User already exists" });
     }
-    user = new User({ name, email, password }); // Default role is "customer", but you can set it to "admin" for testing});
+
+    user = new User({ name, email, password });
     await user.save();
 
-    // Generate JWT token
-    const payload = { user: { userId: user._id, role: user.role } };
+    // ✅ FIXED PAYLOAD
+    const payload = {
+      userId: user._id,
+      role: user.role,
+    };
 
-    // Sign and return the token
     jwt.sign(
       payload,
       process.env.JWT_SECRET,
-      { expiresIn: "40h" },
+      { expiresIn: "7d" },
       (err, token) => {
         if (err) throw err;
 
-        // Send the user and token in the response
         response.status(201).json({
           user: {
             id: user._id,
@@ -41,7 +43,7 @@ userRouter.post("/register", async (request, response) => {
       },
     );
   } catch (error) {
-    console.log(error); // IMPORTANT: Log the error for debugging
+    console.log(error);
     response.status(500).send({ message: error.message });
   }
 });
@@ -51,28 +53,29 @@ userRouter.post("/login", async (request, response) => {
   const { email, password } = request.body;
 
   try {
-    // Find the user by email
     const user = await User.findOne({ email });
     if (!user) {
       return response.status(400).json({ message: "Invalid credentials" });
     }
 
-    // Check if the password is correct
     const isMatch = await user.matchPassword(password);
     if (!isMatch) {
       return response.status(400).json({ message: "Invalid credentials" });
     }
 
-    // Generate JWT token
-    const payload = { user: { userId: user._id, role: user.role } };
+    // ✅ FIXED PAYLOAD
+    const payload = {
+      userId: user._id,
+      role: user.role,
+    };
+
     jwt.sign(
       payload,
       process.env.JWT_SECRET,
-      { expiresIn: "40h" },
+      { expiresIn: "7d" },
       (err, token) => {
         if (err) throw err;
 
-        // Send the user and token in the response
         response.json({
           user: {
             id: user._id,
@@ -85,7 +88,7 @@ userRouter.post("/login", async (request, response) => {
       },
     );
   } catch (error) {
-    console.log(error); // IMPORTANT: Log the error for debugging
+    console.log(error);
     response.status(500).send({ message: error.message });
   }
 });

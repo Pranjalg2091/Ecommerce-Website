@@ -1,32 +1,18 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import UpiPayButton from "./UpiPayButton";
-
-const cart = {
-  products: [
-    {
-      productId: 1,
-      name: "Wheat Flour",
-      size: "5kg",
-      quantity: 1,
-      price: 250,
-      image: "https://picsum.photos/200?random=8",
-    },
-    {
-      productId: 2,
-      name: "Sharbati Wheat",
-      size: "10kg",
-      quantity: 2,
-      price: 840,
-      image: "https://picsum.photos/200?random=9",
-    },
-  ],
-  totalPrice: 1930,
-};
+import UpiPayButton from "./UpiPayButton.jsx";
+import { useDispatch, useSelector } from "react-redux";
+import axios from "axios";
+import { createCheckout } from "../../redux/slices/checkoutSlice.js";
 
 const Checkout = () => {
   const navigate = useNavigate();
-  const [CheckoutId, setCheckoutId] = useState(null); // To track if checkout session is created
+
+  const dispatch = useDispatch();
+  const { cart, loading, error } = useSelector((state) => state.cart);
+  const { user } = useSelector((state) => state.auth);
+
+  const [checkoutId, setCheckoutId] = useState(null); // To track if checkout session is created
   const [shippingAddress, setShippingAddress] = useState({
     firstName: "",
     lastName: "",
@@ -34,8 +20,16 @@ const Checkout = () => {
     city: "",
     postalCode: "",
     state: "",
+    country: "",
     phone: "",
   });
+
+  // Ensure cart is loaded before proceeding
+  useEffect(() => {
+    if (!cart || !cart.products || cart.products.length === 0) {
+      navigate("/");
+    }
+  }, [cart, navigate]);
 
   // If cart is empty, redirect to home or products page
   if (cart.products.length === 0) {
@@ -43,15 +37,75 @@ const Checkout = () => {
     return null; // or a loading state
   }
 
-  const handleCreateCheckout = (e) => {
+  const handleCreateCheckout = async (e) => {
     e.preventDefault();
-    setCheckoutId("123");
+
+    if (cart && cart.products.length > 0) {
+      const response = await dispatch(
+        createCheckout({
+          checkoutItems: cart.products,
+          shippingAddress,
+          paymentMethod: "Razorpay",
+          totalPrice: cart.totalPrice,
+        }),
+      );
+
+      if (response.payload && response.payload._id) {
+        setCheckoutId(response.payload._id);
+      } else {
+        console.error("Checkout creation failed");
+      }
+    }
   };
 
-  const handlePaymentSuccess = (details) => {
-    console.log("Payment successful:", details);
-    navigate("/order-confirmation");
+  const handlePaymentSuccess = async (details) => {
+    try {
+      const response = await axios.put(
+        `${import.meta.env.VITE_BACKEND_URL}/api/checkout/${checkoutId}/pay`,
+        {
+          paymentStatus: "paid",
+          paymentDetails: details,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("userToken")}`,
+          },
+        },
+      );
+      await handleFinalizeCheckout(checkoutId);
+    } catch (error) {
+      console.error(error);
+    }
   };
+
+  const handleFinalizeCheckout = async (checkoutId) => {
+    try {
+      const response = await axios.post(
+        `${import.meta.env.VITE_BACKEND_URL}/api/checkout/${checkoutId}/finalize`,
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("userToken")}`,
+          },
+        },
+      );
+      navigate("/order-confirmation");
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  if (loading) {
+    return <p>Loading Cart...</p>;
+  }
+
+  if (error) {
+    return <p>Error: {error}</p>;
+  }
+
+  if (!cart || !cart.products || cart.products.length === 0) {
+    return <p>Your Cart is empty</p>;
+  }
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 max-w-7xl mx-auto px-6 py-10">
@@ -66,7 +120,7 @@ const Checkout = () => {
             </label>
             <input
               type="email"
-              value="user@example.com"
+              value={user ? user.email : ""}
               className="w-full p-2 border border-border rounded-sm focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:bg-neutral-100 disabled:text-neutral-400 
                 disabled:border-neutral-200"
               disabled
@@ -191,6 +245,23 @@ const Checkout = () => {
             />
           </div>
 
+          {/* Country */}
+          <div className="mb-4">
+            <label className="block text-heading">Country</label>
+            <input
+              type="text"
+              value={shippingAddress.country}
+              onChange={(e) =>
+                setShippingAddress({
+                  ...shippingAddress,
+                  country: e.target.value,
+                })
+              }
+              className="w-full p-2 border border-border rounded-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+              required
+            />
+          </div>
+
           {/* Phone Number */}
           <div className="mb-4">
             <label htmlFor="" className="block text-heading">
@@ -229,11 +300,13 @@ const Checkout = () => {
             </div>
 
             <UpiPayButton
-              amount={cart.totalPrice}
+              amount={cart?.totalPrice || 0}
+              checkoutId={checkoutId}
               user={{
                 name: `${shippingAddress.firstName} ${shippingAddress.lastName}`,
                 phone: shippingAddress.phone,
               }}
+              disabled={false} // 👈 IMPORTANT
               onSuccess={handlePaymentSuccess}
             />
           </div>
@@ -284,7 +357,6 @@ const Checkout = () => {
           <p>Total:</p>
           <p>₹{cart.totalPrice?.toLocaleString()}</p>
         </div>
-        
       </div>
     </div>
   );

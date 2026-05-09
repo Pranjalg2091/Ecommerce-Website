@@ -3,22 +3,38 @@ import userSchema from "../models/userSchema.js";
 
 const protect = async (request, response, next) => {
   let token;
+
   if (
     request.headers.authorization &&
     request.headers.authorization.startsWith("Bearer")
   ) {
     try {
-        token = request.headers.authorization.split(" ")[1];
-        const decoded = jwt.verify(token, process.env.JWT_SECRET);
-        request.user = await userSchema.findById(decoded.user.userId).select("-password");
-        next();
+      token = request.headers.authorization.split(" ")[1];
 
+      const decoded = jwt.verify(token, process.env.JWT_SECRET);
+
+      request.user = await userSchema
+        .findById(decoded.userId)   // 👈 IMPORTANT FIX
+        .select("-password");
+
+      if (!request.user) {
+        return response.status(401).json({ message: "User not found" });
+      }
+
+      next();
     } catch (error) {
-        console.error("Token verification failed:", error);
-        response.status(401).json({ message: "Not authorized, token failed" });
+      console.error("Token verification failed:", error.message);
+
+      if (error.name === "TokenExpiredError") {
+        return response
+          .status(401)
+          .json({ message: "Token expired, login again" });
+      }
+
+      response.status(401).json({ message: "Invalid token" });
     }
   } else {
-    response.status(401).json({ message: "Not authorized, no token provided" });
+    response.status(401).json({ message: "No token provided" });
   }
 };
 

@@ -1,6 +1,9 @@
-import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import loginImage from "../assets/login-image.jpg";
+import { useDispatch, useSelector } from "react-redux";
+import { registerUser } from "../redux/slices/authSlice.js";
+import { mergeCart } from "../redux/slices/cartSlice.js";
 
 const Registration = () => {
   const [name, setName] = useState("");
@@ -8,10 +11,32 @@ const Registration = () => {
   const [phonenumber, setPhonenumber] = useState("");
   const [password, setPassword] = useState("");
 
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const location = useLocation();
+  const { user, guestId, loading } = useSelector((state) => state.auth);
+  const { cart } = useSelector((state) => state.cart);
+
+  // get redirect parameter and check if it checkout or something
+  const redirect = new URLSearchParams(location.search).get("redirect") || "/";
+  const isCheckoutRedirect = redirect.includes("checkout");
+
+  useEffect(() => {
+    if (user) {
+      if (cart?.products.length > 0 && guestId) {
+        dispatch(mergeCart({ guestId, user })).then(() => {
+          navigate(isCheckoutRedirect ? "/checkout" : "/");
+        });
+      } else {
+        navigate(isCheckoutRedirect ? "/checkout" : "/");
+      }
+    }
+  }, [user, guestId, navigate, isCheckoutRedirect, cart, dispatch]);
+
   const handleSubmit = (e) => {
     e.preventDefault();
     // Handle registration logic here
-    console.log("User Registered:", { name, email, phonenumber, password });
+    dispatch(registerUser({ name, email, phonenumber, password }));
   };
 
   return (
@@ -103,11 +128,14 @@ const Registration = () => {
             type="submit"
             className="w-full bg-primary-500 text-white py-2 px-4 rounded-sm hover:bg-primary-600 focus:outline-none"
           >
-            Register
+            {loading ? "Loading..." : "Register"}
           </button>
           <p className="text-center text-body mt-4">
             Already have an account?{" "}
-            <Link to="/login" className="text-secondary-600 hover:underline">
+            <Link
+              to={`/login?redirect=${encodeURIComponent(redirect)}`}
+              className="text-secondary-600 hover:underline"
+            >
               Login
             </Link>
           </p>

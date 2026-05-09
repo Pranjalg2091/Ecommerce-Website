@@ -1,58 +1,29 @@
 import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import { fetchUserOrders } from "../redux/slices/orderSlice.js";
 
 const MyOrdersPage = () => {
-  const [orders, setOrders] = useState([]);
   const navigate = useNavigate();
 
+  const dispatch = useDispatch();
+  const { orders, loading, error } = useSelector((state) => state.orders);
+
   useEffect(() => {
-    // simulate fetch orders data
-    setTimeout(() => {
-      const mockOrders = [
-        // Replace with actual mock data if needed
-        {
-          _id: "12345",
-          createdAt: new Date(),
-          shippingAddress: {
-            address: "Palasia",
-            city: "Indore",
-          },
-
-          orderItems: [
-            {
-              name: "Product 1",
-              image: "https://picsum.photos/600/600?random=10",
-            },
-          ],
-          totalPrice: 430.0,
-          isPaid: true,
-        },
-        {
-          _id: "45678",
-          createdAt: new Date(),
-          shippingAddress: {
-            address: "Tilak Nagar",
-            city: "Indore",
-          },
-
-          orderItems: [
-            {
-              name: "Product 1",
-              image: "https://picsum.photos/600/600?random=12",
-            },
-          ],
-          totalPrice: 250.0,
-          isPaid: true,
-        },
-      ];
-
-      setOrders(mockOrders);
-    }, 1000);
-  }, []);
+    dispatch(fetchUserOrders());
+  }, [dispatch]);
 
   const handleRowClick = (orderId) => {
     // Navigate to order details page
     navigate(`/order/${orderId}`);
+  };
+
+  if (loading) {
+    return <p>Loading...</p>;
+  }
+
+  if (error) {
+    return <p>Error: {error}</p>;
   }
 
   return (
@@ -107,9 +78,11 @@ const MyOrdersPage = () => {
                   <td className="py-2 px-2 sm:py-4 sm:px-4">
                     <span
                       className={`py-1 px-3 rounded-full text-xs font-semibold 
-                        ${order.isPaid 
-                            ? "bg-green-100 text-success" 
-                            : "bg-red-100 text-error"}`}
+                        ${
+                          order.isPaid
+                            ? "bg-green-100 text-success"
+                            : "bg-red-100 text-error"
+                        }`}
                     >
                       {order.isPaid ? "Paid" : "Not Paid"}
                     </span>

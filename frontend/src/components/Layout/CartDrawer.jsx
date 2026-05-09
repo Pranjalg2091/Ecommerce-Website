@@ -2,14 +2,22 @@ import React from "react";
 import { IoClose } from "react-icons/io5";
 import CartContents from "../Cart/CartContents.jsx";
 import { useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
 
 const CartDrawer = ({ drawerOpen, toggleCartDrawer }) => {
-
   const navigate = useNavigate();
+
+  const { user, guestId } = useSelector((state) => state.auth);
+  const { cart } = useSelector((state) => state.cart);
+  const userId = user ? user._id : null;
 
   const handleCheckout = () => {
     toggleCartDrawer(); // Close the drawer first
-    navigate("/checkout");
+    if (!user) {
+      navigate("/login?redirect=checkout");
+    } else {
+      navigate("/checkout");
+    }
   };
 
   return (
@@ -28,18 +36,29 @@ const CartDrawer = ({ drawerOpen, toggleCartDrawer }) => {
       <div className="grow p-4 overflow-y-auto">
         <h2 className="text-xl font-dm-serif mb-4">Your Cart</h2>
 
-        <CartContents />
+        {cart && cart?.products?.length > 0 ? (
+          <CartContents cart={cart} guestId={guestId} userId={userId} />
+        ) : (
+          <p className="text-center text-body mt-10">Your cart is empty.</p>
+        )}
       </div>
 
       {/* Checkout */}
       <div className="p-4 bg-white sticky bottom-0">
-        <button onClick={handleCheckout} className="w-full bg-primary-500 text-white py-3 rounded-sm font-medium hover:bg-primary-700 transition">
-          Checkout
-        </button>
+        {cart && cart?.products?.length > 0 && (
+          <>
+            <button
+              onClick={handleCheckout}
+              className="w-full bg-primary-500 text-white py-3 rounded-sm font-medium hover:bg-primary-700 transition"
+            >
+              Checkout
+            </button>
 
-        <p className="text-xs tracking-tighter text-neutral-500 mt-2 text-center">
-          Shipping, Taxes, and Discount codes calculated at checkout.
-        </p>
+            <p className="text-xs tracking-tighter text-neutral-500 mt-2 text-center">
+              Shipping, Taxes, and Discount codes calculated at checkout.
+            </p>
+          </>
+        )}
       </div>
     </div>
   );
