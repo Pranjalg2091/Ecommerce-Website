@@ -1,31 +1,35 @@
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { clearCart } from "../redux/slices/cartSlice.js";
+import { FcOk } from "react-icons/fc";
 
 const OrderConfirmationPage = () => {
-
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { checkout } = useSelector((state) => state.checkout);
 
+  const { state } = useLocation();
 
-// Clear the cart when the order is confirmed
-useEffect(() => {
-  if (checkout && checkout._id) {
-    dispatch(clearCart());
-     localStorage.removeItem("cart");
-  } else {
-    navigate("/my-orders");
-  }
-}, [checkout, dispatch, navigate]);
+  // Clear the cart when the order is confirmed
+  useEffect(() => {
+    if (checkout && checkout._id) {
+      dispatch(clearCart());
+      localStorage.removeItem("cart");
+    } else {
+      navigate("/my-orders");
+    }
+  }, [checkout, dispatch, navigate]);
 
   const calculateEstimateDelivery = (createdAt) => {
     const orderDate = new Date(createdAt);
     orderDate.setDate(orderDate.getDate() + 1);
     return orderDate.toLocaleDateString();
-
   };
+
+  if (!checkout) {
+    return <p>Loading...</p>;
+  }
 
   return (
     <div className="max-w-4xl mx-auto p-6 font-manrope">
@@ -38,15 +42,17 @@ useEffect(() => {
 
       {checkout && (
         <div className="bg-white rounded-lg border p-6">
-          <div className="mb-4 inline-block bg-green-100 text-success px-4 py-1 rounded-full text-sm font-medium">
-            Payment Successful
+
+          <div className="mb-4 inline-flex items-center gap-2 bg-green-100 border border-green-200 text-success px-5 py-2 rounded-full text-sm font-medium">
+            <FcOk className="text-xl" />
+            <span>Payment Successful</span>
           </div>
 
           <div className="flex justify-between mb-2">
             {/* Order Id and Date */}
             <div>
               <h2 className="text-xl font-dm-serif mb-4">
-                Order ID: {checkout._id}
+                Order ID: {checkout.orderNumber || checkout._id}
               </h2>
               <p className="text-body">
                 Order Date: {new Date(checkout.createdAt).toLocaleDateString()}
@@ -64,7 +70,7 @@ useEffect(() => {
 
           {/* Order Items */}
           <div className="mb-20">
-            {checkout.checkoutItems.map((item) => (
+            {checkout.orderItems.map((item) => (
               <div key={item.productId} className="flex items-center mb-4">
                 <img
                   src={item.image}
@@ -91,7 +97,7 @@ useEffect(() => {
             {/* Payment Information */}
             <div>
               <h3 className="font-dm-serif text-lg mb-2">Payment</h3>
-              <p className="text-body">UPI</p>
+              <p className="text-body">{checkout.paymentMethod}</p>
             </div>
 
             {/* Delivery Information */}

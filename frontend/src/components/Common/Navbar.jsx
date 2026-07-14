@@ -1,31 +1,27 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import logo from "../../assets/Grainmart-logo.svg";
 import { FiUser, FiShoppingCart } from "react-icons/fi";
 import SearchBar from "./SearchBar.jsx";
 import { HiBars3BottomRight } from "react-icons/hi2";
-import CartDrawer from "../Layout/CartDrawer.jsx";
 import { IoClose } from "react-icons/io5";
 import { useSelector } from "react-redux";
 
 const Navbar = () => {
-  const [drawerOpen, setDrawerOpen] = useState(false);
   const [navDrawerOpen, setNavDrawerOpen] = useState(false);
+
+  const navigate = useNavigate();
 
   const { cart } = useSelector((state) => state.cart);
 
   const { user } = useSelector((state) => state.auth);
 
-
   const cartItemCount =
-    cart?.products?.reduce((total, product) => total + product.quantity, 0) || 0;
+    cart?.products?.reduce((total, product) => total + product.quantity, 0) ||
+    0;
 
   const toggleNavDrawer = () => {
     setNavDrawerOpen(!navDrawerOpen);
-  };
-
-  const toggleCartDrawer = () => {
-    setDrawerOpen(!drawerOpen);
   };
 
   return (
@@ -68,27 +64,28 @@ const Navbar = () => {
           {/* RIGHT → ICONS */}
           <div className="flex items-center gap-5">
             {user && user.role === "admin" && (
-              <Link to="/admin" className="block px-2 bg-secondary-500 text-white rounded text-sm">
+              <Link
+                to="/admin"
+                className="block px-2 bg-secondary-500 text-white rounded text-sm"
+              >
                 Admin
               </Link>
             )}
-
 
             <Link to="/profile" className="hover:text-primary-500">
               <FiUser className="text-2xl text-neutral-700 hover:text-primary-500 cursor-pointer" />
             </Link>
 
             <button
-              onClick={toggleCartDrawer}
+              onClick={() => navigate("/cart")}
               className="relative cursor-pointer hover:text-primary-500"
             >
               <FiShoppingCart className="text-2xl text-neutral-700" />
               {cartItemCount > 0 && (
- <span className="absolute -top-2 -right-2 bg-secondary-500 text-neutral-700 text-xs w-5 h-5 flex items-center justify-center rounded-full">
-                {cartItemCount}
-              </span>
+                <span className="absolute -top-2 -right-2 bg-secondary-500 text-neutral-700 text-xs w-5 h-5 flex items-center justify-center rounded-full">
+                  {cartItemCount}
+                </span>
               )}
-             
             </button>
 
             <div className="overflow-hidden">
@@ -101,8 +98,6 @@ const Navbar = () => {
           </div>
         </div>
       </nav>
-
-      <CartDrawer drawerOpen={drawerOpen} toggleCartDrawer={toggleCartDrawer} />
 
       {/* Mobile Navigation */}
       <div

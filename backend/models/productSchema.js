@@ -11,9 +11,9 @@ const sizeSchema = new mongoose.Schema({
     type: Number,
     required: true,
   },
-  originalPrice: {  
+  originalPrice: {
     type: Number,
-    required: true,  // For showing discounts, if any
+    required: true, // For showing discounts, if any
   },
 });
 
@@ -135,6 +135,13 @@ const productSchema = new mongoose.Schema(
       type: Boolean,
       default: true,
     },
+
+    // 🔹 GST
+    gstRate: {
+      type: Number,
+      default: 18,
+    },
+
     user: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",

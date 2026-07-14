@@ -148,7 +148,6 @@ productRouter.delete("/:id", protect, admin, async (request, response) => {
 // Get Api
 productRouter.get("/", async (request, response) => {
   try {
-    
     const { category, size, grindingSlots, search, sortBy, limit } =
       request.query;
 
@@ -223,7 +222,51 @@ productRouter.get("/new-arrivals", async (request, response) => {
   }
 });
 
-// Get API with single products
+// @route GET /api/products/similar/:id
+// @desc Retrieve similar products based on category
+productRouter.get("/similar/:id", async (request, response) => {
+  try {
+    const { id } = request.params;
+
+    const product = await Product.findById(id);
+
+    if (!product) {
+      return response.status(404).json({
+        message: "Product not found",
+      });
+    }
+
+    // Same category products
+    let similarProducts = await Product.find({
+      _id: { $ne: id },
+      category: {
+        $regex: `^${product.category}$`,
+        $options: "i",
+      },
+      isPublished: true,
+    }).limit(4);
+
+    // Fallback if no similar products found
+    if (similarProducts.length === 0) {
+      similarProducts = await Product.find({
+        _id: { $ne: id },
+        isPublished: true,
+      })
+        .sort({ rating: -1, createdAt: -1 })
+        .limit(4);
+    }
+
+    response.json(similarProducts);
+  } catch (error) {
+    console.error(error);
+    response.status(500).json({
+      message: "Server Error",
+    });
+  }
+});
+
+// @route GET /api/products/:id
+// @desc Get a single product by ID
 productRouter.get("/:id", async (request, response) => {
   try {
     const product = await Product.findById(request.params.id);
@@ -238,25 +281,5 @@ productRouter.get("/:id", async (request, response) => {
   }
 });
 
-// @route GET /api/products/similar/:id
-// @desc Retrieve similar products based on category
-productRouter.get("/similar/:id", async (request, response) => {
-  const { id } = request.params;
-  try {
-    const product = await Product.findById(id);
-    if (!product) {
-      return response.status(404).json({ message: "Product not found" });
-    }
-
-    const similarProducts = await Product.find({
-      _id: { $ne: id },
-      category: product.category,
-    }).limit(4);
-    response.json(similarProducts);
-  } catch (error) {
-    console.error(error);
-    response.status(500).json({ message: "Server Error" });
-  }
-});
-
 export default productRouter;
+  

@@ -2,7 +2,18 @@ import React from "react";
 import axios from "axios";
 import { MdLockOutline } from "react-icons/md";
 
-const UpiPayButton = ({ amount, onSuccess, user, disabled, checkoutId }) => {
+const UpiPayButton = ({
+  amount,
+  paymentMethod,
+  onSuccess,
+  user,
+  disabled,
+  checkoutId,
+  setCheckoutId,
+  shippingAddress,
+  checkoutItems,
+  couponCode,
+}) => {
   const loadScript = () => {
     return new Promise((resolve) => {
       if (window.Razorpay) return resolve(true);
@@ -17,87 +28,143 @@ const UpiPayButton = ({ amount, onSuccess, user, disabled, checkoutId }) => {
     });
   };
 
- const handlePayment = async () => {
-  try {
-    if (!checkoutId) {
-      alert("Please click Checkout first");
+  const handlePayment = async () => {
+    console.log("SHIPPING ADDRESS =", shippingAddress);
+
+    if (
+      !shippingAddress.address ||
+      !shippingAddress.city ||
+      !shippingAddress.postalCode ||
+      !shippingAddress.state ||
+      !shippingAddress.country
+    ) {
+      alert("Please fill all delivery details");
       return;
     }
 
-    const isLoaded = await loadScript();
+    try {
+      // if (!checkoutId) {
+      //   alert("Please click Checkout first");
+      //   return;
+      // }
 
-    if (!isLoaded) {
-      alert("Razorpay SDK failed to load");
-      return;
-    }
+      let currentCheckoutId = checkoutId;
 
-    // ✅ STEP 1: CREATE ORDER FROM BACKEND
-    const orderRes = await axios.post(
-      `${import.meta.env.VITE_BACKEND_URL}/api/payment/create-order`,
-      { amount }
-    );
+      if (!currentCheckoutId) {
+        console.log("CHECKOUT DATA =", {
+          checkoutItems,
+          shippingAddress,
+          paymentMethod: "Razorpay",
+          couponCode,
+          totalPrice: amount,
+        });
 
-    const order = orderRes.data;
+        const checkoutRes = await axios.post(
+          `${import.meta.env.VITE_BACKEND_URL}/api/checkout`,
+          {
+            checkoutItems,
+            shippingAddress,
+            paymentMethod: "Razorpay",
+            couponCode,
+            totalPrice: amount,
+          },
+          {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem("userToken")}`,
+            },
+          },
+        );
 
-    const options = {
-      key: import.meta.env.VITE_RAZORPAY_KEY_ID,
-      amount: order.amount,
-      currency: order.currency,
-      order_id: order.id,
+        currentCheckoutId = checkoutRes.data._id;
 
-      name: "GrainMart",
-      description: "Order Payment",
+        setCheckoutId(currentCheckoutId);
+      }
 
-      handler: async function (response) {
-        try {
+      const isLoaded = await loadScript();
 
-          // ✅ STEP 2: VERIFY PAYMENT
-          const verifyRes = await axios.post(
-            `${import.meta.env.VITE_BACKEND_URL}/api/payment/verify-payment`,
-            {
-              ...response,
-              checkoutId,
+      if (!isLoaded) {
+        alert("Razorpay SDK failed to load");
+        return;
+      }
+
+      // ✅ STEP 1: CREATE ORDER FROM BACKEND
+      const orderRes = await axios.post(
+        `${import.meta.env.VITE_BACKEND_URL}/api/payment/create-order`,
+        {
+          checkoutId: currentCheckoutId,
+        },
+      );
+
+      const order = orderRes.data;
+
+      const options = {
+        key: import.meta.env.VITE_RAZORPAY_KEY_ID,
+        amount: order.amount,
+        currency: order.currency,
+        order_id: order.id,
+
+        name: "GrainMart",
+        description: "Order Payment",
+
+        handler: async function (response) {
+          try {
+            // ✅ STEP 2: VERIFY PAYMENT
+            const verifyRes = await axios.post(
+              `${import.meta.env.VITE_BACKEND_URL}/api/payment/verify-payment`,
+              {
+                ...response,
+                checkoutId: currentCheckoutId,
+              },
+            );
+
+            if (verifyRes.data.success) {
+              onSuccess(response, currentCheckoutId);
+            } else {
+              alert("Payment verification failed");
             }
-          );
-
-          if (verifyRes.data.success) {
-            onSuccess(response);
-          } else {
-            alert("Payment verification failed");
+          } catch (error) {
+            console.error(error);
+            alert("Verification failed");
           }
-        } catch (error) {
-          console.error(error);
-          alert("Verification failed");
-        }
-      },
+        },
 
-      prefill: {
-        name: user?.name || "Guest",
-        contact: user?.phone || "9999999999",
-      },
+        prefill: {
+          name: user?.name || "Guest",
+          contact: user?.phone || "9999999999",
+        },
 
-      theme: {
-        color: "#16a34a",
-      },
-    };
+        theme: {
+          color: "#16a34a",
+        },
+      };
 
-    const razorpayInstance = new window.Razorpay(options);
-    razorpayInstance.open();
+      const razorpayInstance = new window.Razorpay(options);
+      razorpayInstance.open();
+    } catch (error) {
+      console.error("PAYMENT ERROR =", error);
 
-  } catch (error) {
-    console.error(error);
-    alert("Payment failed");
-  }
-};
+      if (error.response) {
+        console.log("STATUS =", error.response.status);
+        console.log("DATA =", error.response.data);
+      }
+
+      alert("Payment failed");
+    }
+  };
 
   return (
     <button
+      type="button"
       onClick={handlePayment}
       disabled={disabled}
-      className="w-full flex items-center justify-center gap-2 bg-primary-500 hover:bg-primary-600 text-white py-3 rounded-sm transition-all duration-200 font-manrope text-sm disabled:opacity-50 disabled:cursor-not-allowed"
-    >
+         className="w-full flex items-center justify-center gap-2 bg-primary-500 hover:bg-primary-600 text-white py-4 rounded-lg transition-all duration-300 font-medium text-base shadow-md hover:shadow-lg disabled:opacity-50"
+   >
       <MdLockOutline className="text-lg" />
-      <span>Pay ₹{amount} Securely</span>
+      <span>
+        {paymentMethod === "COD"
+          ? `Place Order • ₹${amount}`
+          : `Pay ₹${amount} Securely`}
+      </span>
     </button>
   );
 };

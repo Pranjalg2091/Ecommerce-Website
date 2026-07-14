@@ -1,14 +1,15 @@
 import React from "react";
 import { Link, NavLink, useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
 import adminLogo from "../../assets/Grainmart-logo-dark.svg";
-import { PiUsersThree } from "react-icons/pi";
+import { logout } from "../../redux/slices/authSlice.js";
+import { clearCart } from "../../redux/slices/cartSlice.js";
+
+import { PiUsersThree, PiSquaresFour } from "react-icons/pi";
 import { FiLogOut } from "react-icons/fi";
 import { LuClipboardList } from "react-icons/lu";
 import { AiOutlineShop } from "react-icons/ai";
 import { BsBoxSeam } from "react-icons/bs";
-import { useDispatch } from "react-redux";
-import { logout } from "../../redux/slices/authSlice";
-import { clearCart } from "../../redux/slices/cartSlice";
 
 const AdminSidebar = () => {
   const navigate = useNavigate();
@@ -20,20 +21,50 @@ const AdminSidebar = () => {
     navigate("/");
   };
 
+  const menuItems = [
+    {
+      title: "Dashboard",
+      icon: <PiSquaresFour size={22} />,
+      path: "/admin",
+    },
+    {
+      title: "Products",
+      icon: <BsBoxSeam size={22} />,
+      path: "/admin/products",
+    },
+    {
+      title: "Orders",
+      icon: <LuClipboardList size={22} />,
+      path: "/admin/orders",
+    },
+    {
+      title: "Users",
+      icon: <PiUsersThree size={22} />,
+      path: "/admin/users",
+    },
+    {
+      title: "Visit Store",
+      icon: <AiOutlineShop size={22} />,
+      path: "/",
+    },
+  ];
+
   return (
-   <div className="h-full flex flex-col p-3 md:p-5 font-manrope overflow-y-auto">
-      {/* Logo */}
-      <Link to="/admin" className="flex items-center justify-center mb-6">
-        <img src={adminLogo} alt="GrainMart Logo" className="h-10 md:h-12" />
-      </Link>
+    <div className="flex h-full w-full flex-col bg-[#111827] font-manrope">
+      {/* ================= Logo ================= */}
+      <div className="px-5 pt-6 pb-5">
+        <Link to="/admin" className="block">
+          <img src={adminLogo} alt="GrainMart" className="h-12" />
+          <h2 className="mt-5 font-dm-serif text-3xl text-white leading-none">
+            Admin Panel
+          </h2>
+          <p className="mt-2 text-sm leading-6 text-neutral-400">GrainMart Management</p>
+        </Link>
+      </div>
+      <div className="mx-5 border-b border-white/10"></div>
 
-      {/* Title */}
-      <h2 className="text-lg md:text-xl font-dm-serif text-white mb-5 md:mb-6 text-center tracking-wide">
-        Admin Dashboard
-      </h2>
-
-      {/* Nav */}
-      <nav className="flex flex-col space-y-1">
+      {/* Navbar */}
+      {/* <nav className="flex flex-col space-y-1">
         <NavLink
           to="/admin/users"
           className={({ isActive }) =>
@@ -87,21 +118,46 @@ const AdminSidebar = () => {
           <AiOutlineShop className="text-lg" />
           <span className="text-sm font-medium">Shop</span>
         </NavLink>
+      </nav> */}
+     <nav className="flex-1 px-3 py-7">
+       <div className="space-y-2">
+        {menuItems.map((item) => (
+          <NavLink
+            key={item.title}
+            to={item.path}
+            end={item.path === "/admin"}
+            className={({ isActive }) =>
+              `flex items-center w-full h-[42px] rounded-md px-5 transition-all duration-200 ${
+                isActive
+                  ? "bg-primary-500 text-white"
+                  : "text-neutral-300 hover:bg-gray-800 hover:text-white"
+              }`
+            }
+          >
+            <span className="w-7">{item.icon}</span>
+            <span className="ml-1 font-medium text-sm">{item.title}</span>
+          </NavLink>
+        ))}
+        </div>
       </nav>
 
-      <div className="mt-6 ">
+      {/* Logout */}
+      <div className="px-3 pb-5">
+      <div className="border-t border-white/10 pt-5">
         <button
           onClick={handleLogout}
-          className="w-full bg-error hover:bg-error-hover text-white py-2 px-4 rounded flex items-center justify-center space-x-2"
-        >
-          <FiLogOut />
-          <span>Logout</span>
+          className="flex w-full h-[42px] items-center justify-center rounded-md bg-error text-sm font-semibold text-white transition-all duration-200 hover:bg-error-hover"
+      >
+          <FiLogOut size={20} />
+          <span className="ml-3"> Logout</span>
         </button>
+      </div>
       </div>
 
       {/* Bottom space */}
-      <div className="mt-auto text-[10px] md:text-xs text-neutral-500 text-center pt-5 md:pt-6">
-        © GrainMart Admin
+      <div className="mx-5 border-t border-white/10 pt-5 pb-5">
+        <p className="text-center text-sm text-neutral-500">GrainMart Admin</p>
+        <p className="mt-1 text-center text-xs text-neutral-600">Version 1.0</p>
       </div>
     </div>
   );

@@ -8,6 +8,7 @@ import Registration from "./pages/Registration.jsx";
 import Profile from "./pages/Profile.jsx";
 import ProductDetails from "./components/Products/ProductDetails.jsx";
 import CollectionPage from "./pages/CollectionPage.jsx";
+import CartPage from "./components/Cart/CartPage.jsx";
 import Checkout from "./components/Cart/Checkout.jsx";
 import OrderConfirmationPage from "./pages/OrderConfirmationPage.jsx";
 import OrderDetailsPage from "./pages/OrderDetailsPage.jsx";
@@ -57,6 +58,7 @@ const App = () => {
               element={<CollectionPage />}
             />
 
+            <Route path="cart" element={<CartPage />} />
             <Route path="checkout" element={<Checkout />} />
             <Route
               path="order-confirmation"
@@ -80,8 +82,8 @@ const App = () => {
             <Route path="users" element={<UserManagement />} />
             <Route path="products" element={<ProductManagement />} />
             <Route path="products/create" element={<ProductFormPage />} />
-            <Route path="products/:id/edit" element={<ProductFormPage />} />
             <Route path="products/:id" element={<AdminProductDetails />} />
+            <Route path="products/:id/edit" element={<ProductFormPage />} />
             <Route path="orders" element={<OrderManagement />} />
           </Route>
         </Routes>

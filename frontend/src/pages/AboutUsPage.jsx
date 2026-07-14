@@ -1,15 +1,14 @@
 import React from "react";
 import { HiOutlineSparkles, HiOutlineScale } from "react-icons/hi";
-
 import { MdOutlineFactory, MdOutlineHealthAndSafety } from "react-icons/md";
-
 import { GiWheat } from "react-icons/gi";
+import Breadcrumbs from "../components/Common/Breadcrumbs.jsx";
 
 const AboutUsPage = () => {
   return (
     <div className=" text-body font-manrope">
       {/* HERO */}
-      <section className="relative h-[75vh] flex items-center justify-center text-center">
+      <section className="relative h-[280px] md:h-[340px] flex items-center justify-center">
         <img
           src="https://picsum.photos/1600/900?random=1"
           alt="hero"
@@ -17,14 +16,20 @@ const AboutUsPage = () => {
         />
         <div className="absolute inset-0 bg-black/60"></div>
 
-        <div className="relative z-10 px-4">
-          <h1 className="text-4xl md:text-6xl font-dm-serif text-white mb-6 leading-tight">
-            Bringing Purity Back <br /> To Your Plate
+        {/* BreadCrumbs */}
+        <div className="relative z-10 w-full max-w-6xl mx-auto px-6 text-center">
+          <h1 className="text-4xl md:text-5xl font-dm-serif text-white mb-4">
+            About Us
           </h1>
-          <p className="max-w-2xl mx-auto text-lg text-neutral-200">
-            Fresh grains. Honest sourcing. Traditional grinding — reimagined for
-            modern homes.
-          </p>
+          <Breadcrumbs
+            className="justify-center"
+            variant="dark"
+            items={[
+              {
+                label: "About Us",
+              },
+            ]}
+          />
         </div>
       </section>
 

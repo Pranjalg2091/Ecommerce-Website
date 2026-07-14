@@ -38,7 +38,9 @@ const orderSchema = new mongoose.Schema(
       ref: "User",
       required: true,
     },
+
     orderItems: [orderItemSchema],
+
     shippingAddress: {
       address: {
         type: String,
@@ -61,14 +63,49 @@ const orderSchema = new mongoose.Schema(
         required: true,
       },
     },
+
     paymentMethod: {
       type: String,
       required: true,
     },
+
+    orderNumber: {
+      type: String,
+      unique: true,
+    },
+    
+    couponCode: {
+      type: String,
+      default: "",
+    },
+
     totalPrice: {
       type: Number,
       required: true,
     },
+
+    pricing: {
+      subtotal: {
+        type: Number,
+        default: 0,
+      },
+
+      couponDiscount: {
+        type: Number,
+        default: 0,
+      },
+
+      shipping: {
+        type: Number,
+        default: 0,
+      },
+
+      total: {
+        type: Number,
+        default: 0,
+      },
+    },
+
     isPaid: {
       type: Boolean,
       default: false,

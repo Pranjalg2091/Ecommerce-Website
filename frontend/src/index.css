@@ -52,7 +52,6 @@
   --color-info: #3b82f6;
   --color-info-hover: #2f6fe0;
 
-
   /* ================= Text Colors ================= */
   --color-heading: #242a27;
   --color-body: #3a433f;
@@ -140,4 +139,5 @@
 /* Firefox */
 .scrollbar-hide {
   scrollbar-width: none;
+  -ms-overflow-style: none;
 }

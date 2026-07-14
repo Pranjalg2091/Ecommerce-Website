@@ -16,6 +16,30 @@ const getCart = async (userId, guestId) => {
 };
 
 // ======================================================
+// Calculate Cart Pricing
+// ======================================================
+const calculateCartPricing = (products) => {
+  const subtotal = products.reduce(
+    (total, item) => total + item.price * item.quantity,
+    0,
+  );
+
+  // Abhi coupon nahi lagaya hai
+  const couponDiscount = 0;
+  
+  const shipping = subtotal >= 999 ? 0 : 40;
+
+  const total = subtotal - couponDiscount + shipping;
+
+  return {
+    subtotal,
+    couponDiscount,
+    shipping,
+    total,
+  };
+};
+
+// ======================================================
 // ✅ ADD TO CART
 // ======================================================
 cartRouter.post("/", async (request, response) => {
@@ -54,6 +78,12 @@ cartRouter.post("/", async (request, response) => {
           name: product.name,
           image: product.images?.[0]?.url || "",
           price: selectedSize.price,
+          originalPrice: selectedSize.originalPrice,
+          discountPercentage: Math.round(
+            ((selectedSize.originalPrice - selectedSize.price) /
+              selectedSize.originalPrice) *
+              100,
+          ),
           size,
           quantity,
         });
@@ -63,6 +93,9 @@ cartRouter.post("/", async (request, response) => {
         (total, item) => total + item.price * item.quantity,
         0,
       );
+
+      // New pricing object
+      cart.pricing = calculateCartPricing(cart.products);
 
       await cart.save();
       return response.status(200).json(cart);
@@ -77,12 +110,21 @@ cartRouter.post("/", async (request, response) => {
             name: product.name,
             image: product.images?.[0]?.url || "",
             price: selectedSize.price,
+            originalPrice: selectedSize.originalPrice,
+            discountPercentage: Math.round(
+              ((selectedSize.originalPrice - selectedSize.price) /
+                selectedSize.originalPrice) *
+                100,
+            ),
             size,
             quantity,
           },
         ],
         totalPrice: selectedSize.price * quantity,
       });
+
+      // New
+      newCart.pricing = calculateCartPricing(newCart.products);
 
       await newCart.save();
       return response.status(201).json(newCart);
@@ -118,6 +160,10 @@ cartRouter.put("/", async (request, response) => {
         (total, item) => total + item.price * item.quantity,
         0,
       );
+
+      // New pricing object
+      cart.pricing = calculateCartPricing(cart.products);
+
       await cart.save();
       return response.status(200).json(cart);
     } else {
@@ -151,6 +197,10 @@ cartRouter.delete("/", async (request, response) => {
         (total, item) => total + item.price * item.quantity,
         0,
       );
+
+      // New pricing object
+      cart.pricing = calculateCartPricing(cart.products);
+
       await cart.save();
       return response.status(200).json(cart);
     } else {
@@ -171,11 +221,25 @@ cartRouter.get("/", async (request, response) => {
 
   try {
     const cart = await getCart(userId, guestId);
+
     if (cart) {
-      response.status(200).json(cart);
-    } else {
-      response.status(404).json({ message: "Cart not found" });
+      return response.status(200).json(cart);
     }
+
+    return response.status(200).json({
+      products: [],
+      pricing: {
+        subtotal: 0,
+        discount: 0,
+        couponDiscount: 0,
+        taxableAmount: 0,
+        cgst: 0,
+        sgst: 0,
+        shipping: 40,
+        total: 40,
+      },
+      totalPrice: 0,
+    });
   } catch (error) {
     console.error(error);
     response.status(500).json({ message: "Server Error" });
@@ -193,17 +257,17 @@ cartRouter.post("/merge", protect, async (request, response) => {
     const userCart = await Cart.findOne({ user: request.user._id });
 
     if (guestCart) {
-      if (guestCart.products.length === 0 ) {
-        return response.status(400).json({ message : "Guest cart is empty"});
+      if (guestCart.products.length === 0) {
+        return response.status(400).json({ message: "Guest cart is empty" });
       }
 
       if (userCart) {
         guestCart.products.forEach((guestItem) => {
           const productIndex = userCart.products.findIndex(
             (item) =>
-              item.productId.toString() === guestItem.productId.toString() 
-            && item.size === guestItem.size,
-          );  
+              item.productId.toString() === guestItem.productId.toString() &&
+              item.size === guestItem.size,
+          );
 
           if (productIndex > -1) {
             userCart.products[productIndex].quantity += guestItem.quantity;
@@ -216,6 +280,9 @@ cartRouter.post("/merge", protect, async (request, response) => {
           (total, item) => total + item.price * item.quantity,
           0,
         );
+
+        userCart.pricing = calculateCartPricing(userCart.products);
+
         await userCart.save();
 
         // Remove the guest cart after merging
@@ -225,26 +292,25 @@ cartRouter.post("/merge", protect, async (request, response) => {
           console.error("Error deleting guest cart after merge:", error);
         }
         return response.status(200).json(userCart);
-      }
-      else {
+      } else {
         guestCart.user = request.user._id;
         guestCart.guestId = undefined;
+
+        guestCart.pricing = calculateCartPricing(guestCart.products);
+
         await guestCart.save();
         return response.status(200).json(guestCart);
       }
-
     } else {
       if (userCart) {
         return response.status(200).json(userCart);
       }
       return response.status(404).json({ message: "No cart to merge" });
     }
-
   } catch (error) {
     console.error(error);
     response.status(500).json({ message: "Server Error" });
   }
-
 });
 
 export default cartRouter;

@@ -8,10 +8,14 @@ const orderRouter = express.Router();
 // Route: GET /api/orders/my-orders
 orderRouter.get("/my-orders", protect, async (request, response) => {
   try {
-    const orders = await Order.find({ user: request.user._id }).sort({
-      createdAt: -1,
+    const orders = await Order.find({
+      user: request.user._id,
+    }).sort({ createdAt: -1 });
+
+    response.status(200).json({
+      success: true,
+      orders,
     });
-    response.json(orders);
   } catch (error) {
     console.error(error);
     response.status(500).json({ message: "Server Error" });
@@ -31,7 +35,10 @@ orderRouter.get("/:id", protect, async (request, response) => {
       response.status(404).json({ message: "Order not found" });
     }
     // Return full order details
-    response.json(order);
+    response.status(200).json({
+      success: true,
+      order,
+    });
   } catch (error) {
     console.error(error);
     response.status(500).json({ message: "Server Error" });

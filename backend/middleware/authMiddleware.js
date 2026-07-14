@@ -10,7 +10,7 @@ const protect = async (request, response, next) => {
   ) {
     try {
       token = request.headers.authorization.split(" ")[1];
-
+      console.log("TOKEN =", token);
       const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
       request.user = await userSchema

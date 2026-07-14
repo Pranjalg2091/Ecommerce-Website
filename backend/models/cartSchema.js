@@ -7,13 +7,34 @@ const cartItemSchema = new mongoose.Schema(
       ref: "Product",
       required: true,
     },
-    name: String,
-    image: String,
-    price: Number,
-    size: String,
+    name: {
+      type: String,
+      required: true,
+    },
+    image: {
+      type: String,
+      required: true,
+    },
+    price: {
+      type: Number,
+      required: true,
+    },
+    size: {
+      type: String,
+      required: true,
+    },
     quantity: {
       type: Number,
       default: 1,
+    },
+    originalPrice: {
+      type: Number,
+      required: true,
+    },
+
+    discountPercentage: {
+      type: Number,
+      default: 0,
     },
   },
   {
@@ -31,14 +52,37 @@ const cartSchema = new mongoose.Schema(
       type: String,
     },
     products: [cartItemSchema],
+
     totalPrice: {
       type: Number,
       required: true,
       default: 0,
     },
+    pricing: {
+      subtotal: {
+        type: Number,
+        default: 0,
+      },
+
+      couponDiscount: {
+        type: Number,
+        default: 0,
+      },
+
+      shipping: {
+        type: Number,
+        default: 0,
+      },
+
+      total: {
+        type: Number,
+        default: 0,
+      },
+    },
   },
   {
     timestamps: true,
+    versionKey: false,
   },
 );
 

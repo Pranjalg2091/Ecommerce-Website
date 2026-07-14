@@ -6,6 +6,7 @@ import ProductGrid from "../components/Products/ProductGrid";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams, useSearchParams } from "react-router-dom";
 import { fetchProductsByFilters } from "../redux/slices/productSlice.js";
+import Breadcrumbs from "../components/Common/Breadcrumbs.jsx";
 
 const CollectionPage = () => {
   const { collection } = useParams();
@@ -24,8 +25,8 @@ const CollectionPage = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   useEffect(() => {
-  dispatch(fetchProductsByFilters({ collection, ...queryParams }));
-}, [dispatch, collection, searchParams.toString()]);
+    dispatch(fetchProductsByFilters({ collection, ...queryParams }));
+  }, [dispatch, collection, searchParams.toString()]);
 
   const toggleSidebar = () => {
     setIsSidebarOpen(!isSidebarOpen);
@@ -66,12 +67,25 @@ const CollectionPage = () => {
         <FilterSidebar />
       </div>
       <div className="flex-grow p-4">
+        {/* Breadcrumbs */}
+
+        <Breadcrumbs
+          className="mb-4"
+          variant="light"
+          items={[
+            {
+              label: "All Products",
+            },
+          ]}
+        />
+
         <h2 className="text-2xl font-dm-serif mb-4">All Products</h2>
 
         {/* Sort Options */}
         <SortOptions />
 
         {/* Product Grid */}
+
         <ProductGrid products={products} loading={loading} error={error} />
       </div>
     </div>

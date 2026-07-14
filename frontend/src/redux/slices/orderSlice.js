@@ -14,7 +14,8 @@ export const fetchUserOrders = createAsyncThunk(
           },
         },
       );
-      return response.data;
+
+      return response.data.orders; // ✅ CHANGE
     } catch (error) {
       return rejectWithValue(error.response.data);
     }
@@ -34,7 +35,8 @@ export const fetchOrderDetails = createAsyncThunk(
           },
         },
       );
-      return response.data;
+
+      return response.data.order; // ✅ CHANGE
     } catch (error) {
       return rejectWithValue(error.response.data);
     }
@@ -45,6 +47,7 @@ const orderSlice = createSlice({
   name: "orders",
   initialState: {
     orders: [],
+    orderDetails: null,
     loading: false,
     error: null,
   },

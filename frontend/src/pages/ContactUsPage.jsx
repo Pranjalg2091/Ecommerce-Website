@@ -1,10 +1,20 @@
 import React from "react";
 import { HiOutlineLocationMarker, HiOutlineMail } from "react-icons/hi";
 import { FiPhone } from "react-icons/fi";
+import Breadcrumbs from "../components/Common/Breadcrumbs.jsx";
 
 const ContactUsPage = () => {
   return (
     <div className="min-h-screen py-16 px-6 font-manrope">
+      {/* Breadcrumbs */}
+      <Breadcrumbs
+        variant="light"
+        items={[
+          {
+            label: "Contact Us",
+          },
+        ]}
+      />
       <div className="max-w-7xl mx-auto">
         {/* Heading */}
         <div className="text-center mb-14">
@@ -57,12 +67,15 @@ const ContactUsPage = () => {
 
             <div className="space-y-6 text-base font-manrope text-body leading-relaxed">
               <p>
-                Got a question? we had love to hear from you. send us a message and we will respond as soon as possible.
+                Got a question? we had love to hear from you. send us a message
+                and we will respond as soon as possible.
               </p>
 
               <p>
                 <HiOutlineLocationMarker className="inline-block mr-2 text-xl" />
-                <span className="font-semibold">Reg & Corporate Office :- </span>
+                <span className="font-semibold">
+                  Reg & Corporate Office :-{" "}
+                </span>
                 26, 3/1 Old Palasia Near Navneet Tower, Madhya Pradesh 452001,
                 India
               </p>

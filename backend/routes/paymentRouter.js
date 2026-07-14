@@ -1,6 +1,7 @@
 import express from "express";
 import Razorpay from "razorpay";
 import crypto from "crypto";
+import Checkout from "../models/checkoutSchema.js";
 
 const paymentRouter = express.Router();
 
@@ -11,18 +12,22 @@ const razorpay = new Razorpay({
 
 // ✅ CREATE ORDER
 paymentRouter.post("/create-order", async (request, response) => {
-  console.log("BACKEND KEY:", process.env.RAZORPAY_KEY_ID);
-
   try {
-    console.log("BODY:", request.body);
+    const { checkoutId } = request.body;
+    const checkout = await Checkout.findById(checkoutId);
 
-    let { amount } = request.body;
-    amount = Number(amount);
+    if (!checkout) {
+      return response.status(404).json({
+        message: "Checkout not found",
+      });
+    }
 
-    console.log("AMOUNT:", amount);
+    const amount = checkout.pricing.total;
 
-    if (!amount || isNaN(amount) || amount <= 0) {
-      return response.status(400).json({ message: "Invalid amount" });
+    if (!amount || amount <= 0) {
+      return response.status(400).json({
+        message: "Invalid amount",
+      });
     }
 
     const order = await razorpay.orders.create({
@@ -32,8 +37,10 @@ paymentRouter.post("/create-order", async (request, response) => {
 
     return response.json(order);
   } catch (error) {
-    console.error("ERROR:", error);
-    return response.status(500).json({ message: error.message });
+    console.error(error);
+    return response.status(500).json({
+      message: error.message,
+    });
   }
 });
 

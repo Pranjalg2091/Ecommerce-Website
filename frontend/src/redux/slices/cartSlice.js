@@ -140,7 +140,10 @@ const cartSlice = createSlice({
   },
   reducers: {
     clearCart: (state) => {
-      state.cart = { products: [] };
+      state.cart = null;
+      state.loading = false;
+      state.error = null;
+
       localStorage.removeItem("cart");
     },
   },
@@ -155,9 +158,10 @@ const cartSlice = createSlice({
         state.cart = action.payload;
         saveCartToStorage(action.payload);
       })
-      .addCase(fetchCart.rejected, (state, action) => {
+      .addCase(fetchCart.rejected, (state) => {
         state.loading = false;
-        state.error = action.error.message || "Failed to fetch cart";
+        state.cart = null;
+        localStorage.removeItem("cart");
       })
 
       // Handle add to cart actions
